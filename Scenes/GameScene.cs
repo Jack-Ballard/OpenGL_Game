@@ -19,8 +19,9 @@ namespace OpenGL_Game.Scenes
         public static float dt = 0;
         EntityManager entityManager;
         SystemManager systemManager;
-        public Camera camera;
+        //public Camera camera;
         public static GameScene gameInstance;
+        bool[] keysPressed = new bool[512];
 
         public GameScene(SceneManager sceneManager) : base(sceneManager)
         {
@@ -35,6 +36,7 @@ namespace OpenGL_Game.Scenes
             sceneManager.updater = Update;
             // Set Keyboard events to go to a method in this class
             sceneManager.keyboardDownDelegate += Keyboard_KeyDown;
+            sceneManager.keyboardUpDelegate += Keyboard_KeyUp;
 
             // Enable Depth Testing
             GL.Enable(EnableCap.DepthTest);
@@ -45,7 +47,7 @@ namespace OpenGL_Game.Scenes
             GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
             // Set Camera
-            camera = new Camera(new Vector3(0, 4, 7), new Vector3(0, 0, 0), (float)(sceneManager.Size.X) / (float)(sceneManager.Size.Y), 0.1f, 100f);
+            camera = new Camera(new Vector3(0, 0.5f, 7), new Vector3(0, 0.5f, 0), (float)(sceneManager.Size.X) / (float)(sceneManager.Size.Y), 0.1f, 100f);
 
             CreateEntities();
             CreateSystems();
@@ -60,18 +62,21 @@ namespace OpenGL_Game.Scenes
             newEntity = new Entity("Moon");
             newEntity.AddComponent(new ComponentPosition(-2.0f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentGeometry("Geometry/Moon/moon.obj"));
+            newEntity.AddComponent(new ComponentShaderDefault());
             entityManager.AddEntity(newEntity);
 
             newEntity = new Entity("Wraith_Raider_Starship");
             newEntity.AddComponent(new ComponentPosition(2.0f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentGeometry("Geometry/Wraith_Raider_Starship/wraith_raider_starship.obj"));
             newEntity.AddComponent(new ComponentVelocity(0.0f, -0.5f, 0.0f));
+            newEntity.AddComponent(new ComponentShaderDefault());
             entityManager.AddEntity(newEntity);
 
             newEntity = new Entity("Intergalactic_Spaceship");
             newEntity.AddComponent(new ComponentPosition(0.0f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentGeometry(
             "Geometry/Intergalactic_Spaceship/Intergalactic_Spaceship.obj"));
+            newEntity.AddComponent(new ComponentShaderDefault());
             entityManager.AddEntity(newEntity);
         }
 
@@ -79,7 +84,7 @@ namespace OpenGL_Game.Scenes
         {
             Systems.System newSystem;
 
-            newSystem = new SystemRender();
+            newSystem = new SystemRender(this);
             systemManager.AddSystem(newSystem);
 
             newSystem = new SystemPhysics();
@@ -95,6 +100,23 @@ namespace OpenGL_Game.Scenes
         {
             dt = (float)e.Time;
             //System.Console.WriteLine("fps=" + (int)(1.0/dt));
+
+            if (keysPressed[(char)Keys.Up])
+            {
+                camera.MoveForward(0.1f);
+            }
+            if (keysPressed[(char)Keys.Down])
+            {
+                camera.MoveForward(-0.1f);
+            }
+            if (keysPressed[(char)Keys.Left])
+            {
+                camera.RotateY(-0.01f);
+            }
+            if (keysPressed[(char)Keys.Right])
+            {
+                camera.RotateY(0.01f);
+            }
 
             // TODO: Add your update logic here
         }
@@ -126,26 +148,35 @@ namespace OpenGL_Game.Scenes
             // Need to remove assets (except Text) from Resource Manager
         }
 
+        //public void Keyboard_KeyDown(KeyboardKeyEventArgs e)
+        //{
+        //    switch (e.Key)
+        //    {
+        //        case Keys.Up:
+        //            camera.MoveForward(0.1f);
+        //            break;
+        //        case Keys.Down:
+        //            camera.MoveForward(-0.1f);
+        //            keysPressed[(char)e.Key] = true;
+        //            break;
+        //        case Keys.Left:
+        //            camera.RotateY(-0.01f);
+        //            break;
+        //        case Keys.Right:
+        //            camera.RotateY(0.01f);
+        //            break;
+        //        case Keys.M:
+        //            sceneManager.ChangeScene(SceneTypes.SCENE_GAME_OVER);
+        //            break;
+        //    }
+        //}
         public void Keyboard_KeyDown(KeyboardKeyEventArgs e)
         {
-            switch (e.Key)
-            {
-                case Keys.Up:
-                    camera.MoveForward(0.1f);
-                    break;
-                case Keys.Down:
-                    camera.MoveForward(-0.1f);
-                    break;
-                case Keys.Left:
-                    camera.RotateY(-0.01f);
-                    break;
-                case Keys.Right:
-                    camera.RotateY(0.01f);
-                    break;
-                case Keys.M:
-                    sceneManager.ChangeScene(SceneTypes.SCENE_GAME_OVER);
-                    break;
-            }
+            keysPressed[(char)e.Key] = true;
+        }
+        public void Keyboard_KeyUp(KeyboardKeyEventArgs e)
+        {
+            keysPressed[(char)e.Key] = false;
         }
     }
 }

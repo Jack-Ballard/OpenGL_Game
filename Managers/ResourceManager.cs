@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SkiaSharp;
 using OpenTK.Graphics.OpenGL;
 using OpenGL_Game.OBJLoader;
+using System.Net;
 
 namespace OpenGL_Game.Managers
 {
@@ -10,6 +11,7 @@ namespace OpenGL_Game.Managers
     {
         static Dictionary<string, Geometry> geometryDictionary = new Dictionary<string, Geometry>();
         static Dictionary<string, int> textureDictionary = new Dictionary<string, int>();
+        static Dictionary<string, int> shaderDictionary = new Dictionary<string, int>();
 
         public static void RemoveAllAssets()
         {
@@ -68,6 +70,26 @@ namespace OpenGL_Game.Managers
             }
 
             return texture;
+        }
+
+        public static int LoadShader(string filename, ShaderType type)
+        {
+            int shader;
+            shaderDictionary.TryGetValue(filename, out shader);
+            if(shader == 0)
+            {
+                shader = GL.CreateShader(type);
+
+                using (System.IO.StreamReader sr = new System.IO.StreamReader(filename))
+                {
+                    GL.ShaderSource(shader, sr.ReadToEnd());
+                }
+                GL.CompileShader(shader);
+                Console.WriteLine(GL.GetShaderInfoLog(shader));
+                shaderDictionary.Add(filename, shader);
+            }
+            
+            return shader;
         }
     }
 }

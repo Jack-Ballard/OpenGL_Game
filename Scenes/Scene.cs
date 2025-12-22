@@ -14,6 +14,7 @@ namespace OpenGL_Game.Scenes
         }
 
         protected SceneManager sceneManager;
+        public Camera camera;
 
         public Scene(SceneManager sceneManager)
         {
