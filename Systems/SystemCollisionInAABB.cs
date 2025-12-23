@@ -56,6 +56,25 @@ namespace OpenGL_Game.Systems
                         Console.WriteLine("Collision Detected between AABBs at positions " + position.Position + " and " + entityPosition.Position);
                     }
                 }
+                else if ((entity.Mask & ComponentTypes.COMPONENT_POSITION) != 0)
+                {
+                    IComponent positionComponent = GetComponent(entity, ComponentTypes.COMPONENT_POSITION);
+                    ComponentPosition entityPosition = ((ComponentPosition)positionComponent);
+
+                    if(entityPosition == position)
+                    {
+                        continue;
+                    }
+                    if(position.Position.X + collision.Xmax >= entityPosition.Position.X &&
+                       position.Position.X + collision.Xmin <= entityPosition.Position.X &&
+                       position.Position.Z + collision.Zmax >= entityPosition.Position.Z &&
+                       position.Position.Z + collision.Zmin <= entityPosition.Position.Z &&
+                       position.Position.Y + collision.Ymax >= entityPosition.Position.Y &&
+                       position.Position.Y + collision.Ymin <= entityPosition.Position.Y)
+                    {
+                        Console.WriteLine("Collision Detected between AABB at position " + position.Position + " and point at position " + entityPosition.Position);
+                    }
+                }
             }
         }
     }

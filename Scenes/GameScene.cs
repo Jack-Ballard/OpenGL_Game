@@ -65,23 +65,26 @@ namespace OpenGL_Game.Scenes
             newEntity.AddComponent(new ComponentPosition(-2.0f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentGeometry("Geometry/Moon/moon.obj"));
             newEntity.AddComponent(new ComponentShaderDefault());
+            //newEntity.AddComponent(new ComponentCollisionSphere(1.0f));
             entityManager.AddEntity(newEntity);
 
             newEntity = new Entity("Wraith_Raider_Starship");
-            newEntity.AddComponent(new ComponentPosition(2.0f, 0.0f, 0.0f));
+            newEntity.AddComponent(new ComponentPosition(2.0f, -0.0f, 0.0f));
             newEntity.AddComponent(new ComponentGeometry("Geometry/Wraith_Raider_Starship/wraith_raider_starship.obj"));
             newEntity.AddComponent(new ComponentVelocity(-0.5f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentShaderDefault());
             newEntity.AddComponent(new ComponentAudio());
-            newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
+            //newEntity.AddComponent(new ComponentCollisionLine(new Vector3(-1.0f, 0.0f, 0.0f)));
+            //newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
             entityManager.AddEntity(newEntity);
 
             newEntity = new Entity("Intergalactic_Spaceship");
-            newEntity.AddComponent(new ComponentPosition(0.0f, 0.0f, 0.0f));
+            newEntity.AddComponent(new ComponentPosition(0.0f, -0.1f, 0.0f));
             newEntity.AddComponent(new ComponentGeometry(
             "Geometry/Intergalactic_Spaceship/Intergalactic_Spaceship.obj"));
             newEntity.AddComponent(new ComponentShaderDefault());
-            newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
+            //newEntity.AddComponent(new ComponentCollisionLine(new Vector3(-1.0f, 0.2f, 0.0f)));
+            //newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
             entityManager.AddEntity(newEntity);
         }
 
@@ -102,6 +105,9 @@ namespace OpenGL_Game.Scenes
             systemManager.AddSystem(newSystem);
 
             newSystem = new SystemCollisionInAABB(entityManager.Entities());
+            systemManager.AddSystem(newSystem);
+
+            newSystem = new SystemCollisionLineLine(entityManager.Entities());
             systemManager.AddSystem(newSystem);
         }
 

@@ -57,7 +57,21 @@ namespace OpenGL_Game.Systems
                     {
                         Console.WriteLine("Collision Detected between spheres at positions " + position.Position + " and " + entityPosition.Position);
                     }
-                    
+
+                }
+                else if ((entity.Mask & ComponentTypes.COMPONENT_POSITION) != 0)
+                {
+                    IComponent positionComponent = GetComponent(entity, ComponentTypes.COMPONENT_POSITION);
+                    ComponentPosition entityPosition = ((ComponentPosition)positionComponent);
+
+                    if (entityPosition == position)
+                    {
+                        continue;
+                    }
+                    if ((entityPosition.Position - position.Position).Length < collision.radius)
+                    {
+                        Console.WriteLine("Collision Detected between sphere at position " + position.Position + " and point at position " + entityPosition.Position);
+                    }
                 }
             }
         }
