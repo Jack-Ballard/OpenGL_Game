@@ -39,5 +39,19 @@ namespace OpenGL_Game.Managers
             }
             );
         }
+        public void CloseSystems(EntityManager entityManager)
+        {
+            List<Entity> entityList = entityManager.Entities();
+            foreach (Systems.System system in systemList)
+            {
+                if(system is SystemAudio)
+                {
+                    foreach (Entity entity in entityList)
+                    {
+                        ((SystemAudio)system).OnClose(entity);
+                    }
+                }
+            }
+        }
     }
 }

@@ -66,7 +66,7 @@ namespace OpenGL_Game.Systems
 
         public string Name
         {
-            get { return "SystemRender"; }
+            get { return "SystemPhysics"; }
         }
 
         public override void OnAction(Entity entity)

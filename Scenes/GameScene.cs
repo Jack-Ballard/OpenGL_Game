@@ -23,6 +23,8 @@ namespace OpenGL_Game.Scenes
         public static GameScene gameInstance;
         bool[] keysPressed = new bool[512];
 
+        
+
         public GameScene(SceneManager sceneManager) : base(sceneManager)
         {
             gameInstance = this;
@@ -68,8 +70,10 @@ namespace OpenGL_Game.Scenes
             newEntity = new Entity("Wraith_Raider_Starship");
             newEntity.AddComponent(new ComponentPosition(2.0f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentGeometry("Geometry/Wraith_Raider_Starship/wraith_raider_starship.obj"));
-            newEntity.AddComponent(new ComponentVelocity(0.0f, -0.5f, 0.0f));
+            newEntity.AddComponent(new ComponentVelocity(-0.5f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentShaderDefault());
+            newEntity.AddComponent(new ComponentAudio());
+            newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
             entityManager.AddEntity(newEntity);
 
             newEntity = new Entity("Intergalactic_Spaceship");
@@ -77,6 +81,7 @@ namespace OpenGL_Game.Scenes
             newEntity.AddComponent(new ComponentGeometry(
             "Geometry/Intergalactic_Spaceship/Intergalactic_Spaceship.obj"));
             newEntity.AddComponent(new ComponentShaderDefault());
+            newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
             entityManager.AddEntity(newEntity);
         }
 
@@ -88,6 +93,15 @@ namespace OpenGL_Game.Scenes
             systemManager.AddSystem(newSystem);
 
             newSystem = new SystemPhysics();
+            systemManager.AddSystem(newSystem);
+
+            newSystem = new SystemAudio(this);
+            systemManager.AddSystem(newSystem);
+
+            newSystem = new SystemCollisionSphereSphere(entityManager.Entities());
+            systemManager.AddSystem(newSystem);
+
+            newSystem = new SystemCollisionInAABB(entityManager.Entities());
             systemManager.AddSystem(newSystem);
         }
 
@@ -117,6 +131,10 @@ namespace OpenGL_Game.Scenes
             {
                 camera.RotateY(0.01f);
             }
+            if (keysPressed[(char)Keys.M])
+            {
+                sceneManager.ChangeScene(SceneTypes.SCENE_GAME_OVER);
+            }
 
             // TODO: Add your update logic here
         }
@@ -145,6 +163,7 @@ namespace OpenGL_Game.Scenes
         {
             sceneManager.keyboardDownDelegate -= Keyboard_KeyDown;
             ResourceManager.RemoveAllAssets();
+            systemManager.CloseSystems(entityManager);
             // Need to remove assets (except Text) from Resource Manager
         }
 
