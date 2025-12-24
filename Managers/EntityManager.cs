@@ -20,7 +20,7 @@ namespace OpenGL_Game.Managers
             entityList.Add(entity);
         }
 
-        private Entity FindEntity(string name)
+        public Entity FindEntity(string name)
         {
             return entityList.Find(delegate(Entity e)
             {

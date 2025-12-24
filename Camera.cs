@@ -50,5 +50,6 @@ namespace OpenGL_Game
             targetPosition = cameraPosition + cameraDirection;
             view = Matrix4.LookAt(cameraPosition, targetPosition, cameraUp);
         }
+
     }
 }
