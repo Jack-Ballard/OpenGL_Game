@@ -75,8 +75,11 @@ namespace OpenGL_Game.Systems
         {
             if ((entity.Mask & MASK) == MASK)
             {
-                IComponent geometryComponent = GetComponent(entity, ComponentTypes.COMPONENT_GEOMETRY);
-                Geometry geometry = ((ComponentGeometry)geometryComponent).Geometry();
+                List<IComponent> geometryComponent = GetComponentList(entity, ComponentTypes.COMPONENT_GEOMETRY);
+                List<Geometry> geometry = new List<Geometry>();
+                foreach(IComponent geoComp in geometryComponent)
+                    geometry.Add(((ComponentGeometry)geoComp).Geometry());
+                
 
                 IComponent positionComponent = GetComponent(entity, ComponentTypes.COMPONENT_POSITION);
                 Vector3 position = ((ComponentPosition)positionComponent).Position;
@@ -85,7 +88,8 @@ namespace OpenGL_Game.Systems
                 IComponent shaderComponent = GetComponent(entity, ComponentTypes.COMPONENT_SHADER);
                 ComponentShader shader = (ComponentShader)shaderComponent;
 
-                Draw(model, geometry, shader);
+                foreach (Geometry geo in geometry)
+                    Draw(model, geo, shader);
             }
         }
 

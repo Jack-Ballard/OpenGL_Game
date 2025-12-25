@@ -20,7 +20,8 @@ namespace OpenGL_Game.Scenes
         EntityManager entityManager;
         SystemManager systemManager;
         //public Camera camera;
-        public ComponentPosition cameraPosition;
+        public ComponentPosition playerEntityPosition;
+        public ComponentVelocity playerEntityVelocity;
         public static GameScene gameInstance;
         bool[] keysPressed = new bool[512];
 
@@ -54,7 +55,7 @@ namespace OpenGL_Game.Scenes
 
             CreateEntities();
             CreateSystems();
-            AssignCameraToEntity("Wraith_Raider_Starship");
+            AssignCameraToEntity("Player");
 
             // TODO: Add your initialization logic here
         }
@@ -63,16 +64,25 @@ namespace OpenGL_Game.Scenes
         {
             Entity newEntity;
 
+            newEntity = new Entity("Player");
+            newEntity.AddComponent(new ComponentPosition(2.0f, 0.5f, 0.7f));
+            newEntity.AddComponent(new ComponentGeometry("Geometry/Skybox/Skybox.obj"));
+            newEntity.AddComponent(new ComponentVelocity(-0.5f, 0.0f, 0.0f));
+            newEntity.AddComponent(new ComponentShaderDefault());
+            newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
+            entityManager.AddEntity(newEntity);
+
             newEntity = new Entity("Moon");
             newEntity.AddComponent(new ComponentPosition(-2.0f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentGeometry("Geometry/Moon/moon.obj"));
             newEntity.AddComponent(new ComponentShaderDefault());
+            //newEntity.AddComponent(new ComponentCollisionAABB(1, -1, 1, -1, 1, -1));
             //newEntity.AddComponent(new ComponentCollisionSphere(1.0f));
             entityManager.AddEntity(newEntity);
 
             newEntity = new Entity("Wraith_Raider_Starship");
-            newEntity.AddComponent(new ComponentPosition(2.0f, -0.0f, 0.0f));
-            newEntity.AddComponent(new ComponentGeometry("Geometry/Wraith_Raider_Starship/wraith_raider_starship.obj"));
+            newEntity.AddComponent(new ComponentPosition(2.0f, 0.5f, 0.0f));
+            newEntity.AddComponent(new ComponentGeometry("Geometry/Wraith_Raider_Starship/Wraith_Raider_Starship.obj"));
             newEntity.AddComponent(new ComponentVelocity(-0.5f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentShaderDefault());
             //newEntity.AddComponent(new ComponentAudio());
@@ -92,7 +102,10 @@ namespace OpenGL_Game.Scenes
             newEntity = new Entity("Maze");
             newEntity.AddComponent(new ComponentPosition(29.0f, -1.0f, -22.0f));
             newEntity.AddComponent(new ComponentGeometry("Geometry/Maze/maze.obj"));
+            //newEntity.AddComponent(new ComponentGeometry("Geometry/Moon/moon.obj"));
             newEntity.AddComponent(new ComponentShaderDefault());
+            newEntity.AddComponent(new ComponentCollisionAABB(1f, -0f, 0f, -17f, 1, -1));
+            //newEntity.AddComponent(new ComponentCollisionAABB(17, -1, 0.5f, -0.5f, 1, -1));
             entityManager.AddEntity(newEntity);
         }
 
@@ -128,14 +141,18 @@ namespace OpenGL_Game.Scenes
         {
             dt = (float)e.Time;
             //System.Console.WriteLine("fps=" + (int)(1.0/dt));
-
+            bool keyPressed = false;
             if (keysPressed[(char)Keys.Up])
             {
-                cameraPosition.Position += camera.cameraDirection * 0.1f;
+                //cameraPosition.Position += camera.cameraDirection * 0.1f;
+                playerEntityVelocity.Velocity = camera.cameraDirection * 5f;
+                keyPressed = true;
             }
             if (keysPressed[(char)Keys.Down])
             {
-                cameraPosition.Position += camera.cameraDirection * -0.1f;
+                //cameraPosition.Position += camera.cameraDirection * -0.1f;
+                playerEntityVelocity.Velocity = camera.cameraDirection * -5f;
+                keyPressed = true;
             }
             if (keysPressed[(char)Keys.Left])
             {
@@ -149,9 +166,14 @@ namespace OpenGL_Game.Scenes
             {
                 sceneManager.ChangeScene(SceneTypes.SCENE_GAME_OVER);
             }
+            if(!keyPressed)
+            {
+                //playerEntityVelocity.Velocity = new Vector3(0, 0, 0);
+                playerEntityVelocity.Velocity = playerEntityVelocity.Velocity * new Vector3(0.2f, 0.2f, 0.2f);
+            }
 
             //Console.WriteLine(cameraPosition.Position);
-            camera.cameraPosition = cameraPosition.Position;
+            camera.cameraPosition = playerEntityPosition.Position;
             camera.UpdateView();
 
             //foreach (IComponent component in entityManager.FindEntity("Wraith_Raider_Starship").Components)
@@ -234,7 +256,12 @@ namespace OpenGL_Game.Scenes
                 if (component.ComponentType == ComponentTypes.COMPONENT_POSITION)
                 {
                     ComponentPosition position = (ComponentPosition)component;
-                    cameraPosition = position;
+                    playerEntityPosition = position;
+                }
+                if (component.ComponentType == ComponentTypes.COMPONENT_VELOCITY)
+                {
+                    ComponentVelocity velocity = (ComponentVelocity)component;
+                    playerEntityVelocity = velocity;
                 }
             }
         }

@@ -88,6 +88,15 @@
     <None Update="Geometry\Moon_Blender_41\moon_diffuse.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Geometry\Skybox\skybox.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Geometry\Skybox\Skybox.mtl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Geometry\Skybox\Skybox.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Geometry\Text\text.mtl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -18,6 +18,22 @@ namespace OpenGL_Game.Systems
             return iComponent;
         }
 
+        public List<IComponent> GetComponentList(Entity entity, ComponentTypes componentType)
+        {
+            List<IComponent> components = new (entity.Components);
+
+            for(int i = components.Count - 1; i >= 0; i--)
+            {
+                IComponent component = components[i];
+                if (component.ComponentType != componentType)
+                {
+                    components.RemoveAt(i);
+                }
+            }
+
+            return components;
+        }
+
 
         public abstract void OnAction(Entity entity);
 
