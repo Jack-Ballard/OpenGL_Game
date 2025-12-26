@@ -52,23 +52,42 @@ namespace OpenGL_Game.Systems
                     IComponent collisionComponent = GetComponent(entity, ComponentTypes.COMPONENT_COLLISION_AABB);
                     ComponentCollisionAABB entityCollision = ((ComponentCollisionAABB)collisionComponent);
 
-                    if (position.Position.X + collision.Xmax >= entityPosition.Position.X + entityCollision.Xmin &&
-                       position.Position.X + collision.Xmin <= entityPosition.Position.X + entityCollision.Xmax &&
-                       position.Position.Z + collision.Zmax >= entityPosition.Position.Z + entityCollision.Zmin &&
-                       position.Position.Z + collision.Zmin <= entityPosition.Position.Z + entityCollision.Zmax &&
-                       position.Position.Y + collision.Ymax >= entityPosition.Position.Y + entityCollision.Ymin &&
-                       position.Position.Y + collision.Ymin <= entityPosition.Position.Y + entityCollision.Ymax)
+                    if ((entity.Mask & ComponentTypes.COMPONENT_VELOCITY) == 0)
                     {
-                        Console.WriteLine("Collision Detected between AABBs at positions " + position.Position + " and " + entityPosition.Position);
-                        if ((entity.Mask & ComponentTypes.COMPONENT_VELOCITY) != 0)
+                        if (TestCollision(collision, position, entityPosition.Position, entityCollision))
                         {
-                            IComponent velocityComponent = GetComponent(entity, ComponentTypes.COMPONENT_VELOCITY);
-                            ComponentVelocity entityVelocity = ((ComponentVelocity)velocityComponent);
-                            entityVelocity.Velocity = entityVelocity.Velocity;
-                            entityPosition.Position = entityPosition.Position + entityVelocity.Velocity * GameScene.dt;
-
+                            Console.WriteLine("Collision Detected between AABBs at positions " + position.Position + " and " + entityPosition.Position);
                         }
                     }
+                    else
+                    {
+                        IComponent velocityComponent = GetComponent(entity, ComponentTypes.COMPONENT_VELOCITY);
+                        ComponentVelocity entityVelocity = ((ComponentVelocity)velocityComponent);
+
+                        Vector3 nextPosition = entityPosition.Position + new Vector3(entityVelocity.Velocity.X * 1.5f, 0, 0) * GameScene.dt;
+                        if (TestCollision(collision, position, nextPosition, entityCollision))
+                            entityVelocity.Velocity = new Vector3(-entityVelocity.Velocity.X, entityVelocity.Velocity.Y, entityVelocity.Velocity.Z);
+                        else
+                            entityVelocity.Velocity = new Vector3(0, entityVelocity.Velocity.Y, entityVelocity.Velocity.Z);
+
+                        nextPosition = entityPosition.Position + new Vector3(0, entityVelocity.Velocity.Y * 1.5f, 0) * GameScene.dt;
+                        if (TestCollision(collision, position, nextPosition, entityCollision))
+                            entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, -entityVelocity.Velocity.Y, entityVelocity.Velocity.Z);
+                        else
+                            entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, 0, entityVelocity.Velocity.Z);
+
+                        nextPosition = entityPosition.Position + new Vector3(0, 0, entityVelocity.Velocity.Z * 1.5f) * GameScene.dt;
+                        if (TestCollision(collision, position, nextPosition, entityCollision))
+                            entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, entityVelocity.Velocity.Y, -entityVelocity.Velocity.Z);
+                        else
+                            entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, entityVelocity.Velocity.Y, 0);
+                        if(entityVelocity.Velocity != new Vector3(0,0,0))
+                        {
+                            Console.WriteLine("Collision Detected between AABBs at positions " + position.Position + " and " + nextPosition);
+                            entityPosition.Position = entityPosition.Position + entityVelocity.Velocity * GameScene.dt;
+                        }
+                    }
+
                 }
                 else if ((entity.Mask & ComponentTypes.COMPONENT_POSITION) != 0)
                 {
@@ -79,12 +98,7 @@ namespace OpenGL_Game.Systems
                     {
                         continue;
                     }
-                    if (position.Position.X + collision.Xmax >= entityPosition.Position.X &&
-                       position.Position.X + collision.Xmin <= entityPosition.Position.X &&
-                       position.Position.Z + collision.Zmax >= entityPosition.Position.Z &&
-                       position.Position.Z + collision.Zmin <= entityPosition.Position.Z &&
-                       position.Position.Y + collision.Ymax >= entityPosition.Position.Y &&
-                       position.Position.Y + collision.Ymin <= entityPosition.Position.Y)
+                    if(TestCollision(collision, position, entityPosition.Position))
                     {
                         Console.WriteLine("Collision Detected between AABB at position " + position.Position + " and point at position " + entityPosition.Position);
                     }
@@ -92,22 +106,31 @@ namespace OpenGL_Game.Systems
             }
         }
 
-        public Vector3 SnapToCardinal(Vector3 vector)
+        public bool TestCollision(ComponentCollisionAABB collision, ComponentPosition position, Vector3 entityPosition, ComponentCollisionAABB entityCollision = null)
         {
-            Vector3 snapped = new Vector3(0, 0, 0);
-            if (Math.Abs(vector.X) >= Math.Abs(vector.Y) && Math.Abs(vector.X) >= Math.Abs(vector.Z))
+            if (entityCollision == null)
             {
-                snapped.X = MathF.Sign(vector.X);
+                if (position.Position.X + collision.Xmax >= entityPosition.X &&
+                position.Position.X + collision.Xmin <= entityPosition.X &&
+                position.Position.Z + collision.Zmax >= entityPosition.Z &&
+                position.Position.Z + collision.Zmin <= entityPosition.Z &&
+                position.Position.Y + collision.Ymax >= entityPosition.Y &&
+                position.Position.Y + collision.Ymin <= entityPosition.Y)
+                {
+                    return true;
+                }
             }
-            else if (Math.Abs(vector.Y) >= Math.Abs(vector.X) && Math.Abs(vector.Y) >= Math.Abs(vector.Z))
+            else if (position.Position.X + collision.Xmax >= entityPosition.X + entityCollision.Xmin &&
+                       position.Position.X + collision.Xmin <= entityPosition.X + entityCollision.Xmax &&
+                       position.Position.Z + collision.Zmax >= entityPosition.Z + entityCollision.Zmin &&
+                       position.Position.Z + collision.Zmin <= entityPosition.Z + entityCollision.Zmax &&
+                       position.Position.Y + collision.Ymax >= entityPosition.Y + entityCollision.Ymin &&
+                       position.Position.Y + collision.Ymin <= entityPosition.Y + entityCollision.Ymax)
             {
-                snapped.Y = MathF.Sign(vector.Y);
+                return true;
             }
-            else if (Math.Abs(vector.Z) >= Math.Abs(vector.X) && Math.Abs(vector.Z) >= Math.Abs(vector.Y))
-            {
-                snapped.Z = MathF.Sign(vector.Z);
-            }
-            return snapped;
+            return false;
         }
+
     }
 }
