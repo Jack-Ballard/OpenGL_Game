@@ -96,7 +96,6 @@ namespace OpenGL_Game.Systems
                             entityPosition.Position = entityPosition.Position + repulsionVelocity * 1.005f * GameScene.dt;
                         }
                     }
-
                 }
                 else if ((entity.Mask & ComponentTypes.COMPONENT_POSITION) != 0)
                 {
