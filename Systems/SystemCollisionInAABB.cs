@@ -64,27 +64,36 @@ namespace OpenGL_Game.Systems
                         IComponent velocityComponent = GetComponent(entity, ComponentTypes.COMPONENT_VELOCITY);
                         ComponentVelocity entityVelocity = ((ComponentVelocity)velocityComponent);
 
-                        Vector3 nextPosition = entityPosition.Position + new Vector3(entityVelocity.Velocity.X * 1.5f, 0, 0) * GameScene.dt;
-                        if (TestCollision(collision, position, nextPosition, entityCollision))
-                            entityVelocity.Velocity = new Vector3(-entityVelocity.Velocity.X, entityVelocity.Velocity.Y, entityVelocity.Velocity.Z);
-                        else
-                            entityVelocity.Velocity = new Vector3(0, entityVelocity.Velocity.Y, entityVelocity.Velocity.Z);
+                        Vector3 repulsionVelocity = new Vector3(0,0,0);
+                        Vector3 nextPosition = entityPosition.Position + new Vector3(entityVelocity.Velocity.X * 2, 0, 0) * GameScene.dt;
 
-                        nextPosition = entityPosition.Position + new Vector3(0, entityVelocity.Velocity.Y * 1.5f, 0) * GameScene.dt;
                         if (TestCollision(collision, position, nextPosition, entityCollision))
-                            entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, -entityVelocity.Velocity.Y, entityVelocity.Velocity.Z);
+                            //entityVelocity.Velocity = new Vector3(-entityVelocity.Velocity.X, entityVelocity.Velocity.Y, entityVelocity.Velocity.Z);
+                            repulsionVelocity.X = -entityVelocity.Velocity.X;
                         else
-                            entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, 0, entityVelocity.Velocity.Z);
+                            //entityVelocity.Velocity = new Vector3(0, entityVelocity.Velocity.Y, entityVelocity.Velocity.Z);
+                            repulsionVelocity.X = 0;
 
-                        nextPosition = entityPosition.Position + new Vector3(0, 0, entityVelocity.Velocity.Z * 1.5f) * GameScene.dt;
+                        nextPosition = entityPosition.Position + new Vector3(0, entityVelocity.Velocity.Y * 2, 0) * GameScene.dt;
                         if (TestCollision(collision, position, nextPosition, entityCollision))
-                            entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, entityVelocity.Velocity.Y, -entityVelocity.Velocity.Z);
+                            //entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, -entityVelocity.Velocity.Y, entityVelocity.Velocity.Z);
+                            repulsionVelocity.Y = -entityVelocity.Velocity.Y;
                         else
-                            entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, entityVelocity.Velocity.Y, 0);
-                        if(entityVelocity.Velocity != new Vector3(0,0,0))
+                            //entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, 0, entityVelocity.Velocity.Z);
+                            repulsionVelocity.Y = 0;
+
+                        nextPosition = entityPosition.Position + new Vector3(0, 0, entityVelocity.Velocity.Z * 2) * GameScene.dt;
+                        if (TestCollision(collision, position, nextPosition, entityCollision))
+                            //entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, entityVelocity.Velocity.Y, -entityVelocity.Velocity.Z);
+                            repulsionVelocity.Z = -entityVelocity.Velocity.Z;
+                        else
+                            //entityVelocity.Velocity = new Vector3(entityVelocity.Velocity.X, entityVelocity.Velocity.Y, 0);
+                            repulsionVelocity.Z = 0;
+
+                        if (entityVelocity.Velocity != new Vector3(0,0,0))
                         {
                             Console.WriteLine("Collision Detected between AABBs at positions " + position.Position + " and " + nextPosition);
-                            entityPosition.Position = entityPosition.Position + entityVelocity.Velocity * GameScene.dt;
+                            entityPosition.Position = entityPosition.Position + repulsionVelocity * 1.005f * GameScene.dt;
                         }
                     }
 
