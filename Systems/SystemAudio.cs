@@ -21,17 +21,20 @@ namespace OpenGL_Game.Systems
             scene = pScene;
         }
 
-        public override void OnAction(Entity entity)
+        public override void OnAction(List<Entity> entities)
         {
-            if ((entity.Mask & MASK) == MASK)
+            foreach(Entity entity in entities)
             {
-                IComponent audioComponent = GetComponent(entity, ComponentTypes.COMPONENT_AUDIO);
-                ComponentAudio audio = ((ComponentAudio)audioComponent);
+                if ((entity.Mask & MASK) == MASK)
+                {
+                    IComponent audioComponent = GetComponent(entity, ComponentTypes.COMPONENT_AUDIO);
+                    ComponentAudio audio = ((ComponentAudio)audioComponent);
 
-                IComponent positionComponent = GetComponent(entity, ComponentTypes.COMPONENT_POSITION);
-                ComponentPosition position = ((ComponentPosition)positionComponent);
+                    IComponent positionComponent = GetComponent(entity, ComponentTypes.COMPONENT_POSITION);
+                    ComponentPosition position = ((ComponentPosition)positionComponent);
 
-                PlaySound(ref audio, ref position);
+                    PlaySound(ref audio, ref position);
+                }
             }
         }
 

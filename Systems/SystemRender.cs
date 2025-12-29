@@ -71,26 +71,30 @@ namespace OpenGL_Game.Systems
             get { return "SystemRender"; }
         }
 
-        public override void OnAction(Entity entity)
+        public override void OnAction(List<Entity> entities)
         {
-            if ((entity.Mask & MASK) == MASK)
+            foreach(Entity entity in entities)
             {
-                List<IComponent> geometryComponent = GetComponentList(entity, ComponentTypes.COMPONENT_GEOMETRY);
-                List<Geometry> geometry = new List<Geometry>();
-                foreach(IComponent geoComp in geometryComponent)
-                    geometry.Add(((ComponentGeometry)geoComp).Geometry());
-                
+                if ((entity.Mask & MASK) == MASK)
+                {
+                    List<IComponent> geometryComponent = GetComponentList(entity, ComponentTypes.COMPONENT_GEOMETRY);
+                    List<Geometry> geometry = new List<Geometry>();
+                    foreach (IComponent geoComp in geometryComponent)
+                        geometry.Add(((ComponentGeometry)geoComp).Geometry());
 
-                IComponent positionComponent = GetComponent(entity, ComponentTypes.COMPONENT_POSITION);
-                Vector3 position = ((ComponentPosition)positionComponent).Position;
-                Matrix4 model = Matrix4.CreateTranslation(position);
 
-                IComponent shaderComponent = GetComponent(entity, ComponentTypes.COMPONENT_SHADER);
-                ComponentShader shader = (ComponentShader)shaderComponent;
+                    IComponent positionComponent = GetComponent(entity, ComponentTypes.COMPONENT_POSITION);
+                    Vector3 position = ((ComponentPosition)positionComponent).Position;
+                    Matrix4 model = Matrix4.CreateTranslation(position);
 
-                foreach (Geometry geo in geometry)
-                    Draw(model, geo, shader);
+                    IComponent shaderComponent = GetComponent(entity, ComponentTypes.COMPONENT_SHADER);
+                    ComponentShader shader = (ComponentShader)shaderComponent;
+
+                    foreach (Geometry geo in geometry)
+                        Draw(model, geo, shader);
+                }
             }
+            
         }
 
         public void Draw(Matrix4 model, Geometry geometry, ComponentShader shaderComponent)

@@ -19,11 +19,14 @@ namespace OpenGL_Game.Scenes
         public static float dt = 0;
         EntityManager entityManager;
         SystemManager systemManager;
+        CollisionManager collisionManager;
+        InputManager inputManager;
         //public Camera camera;
         public ComponentPosition playerEntityPosition;
         public ComponentVelocity playerEntityVelocity;
         public static GameScene gameInstance;
-        bool[] keysPressed = new bool[512];
+        //bool[] keysPressed = new bool[512];
+        private string _playerName = "Player";
 
 
 
@@ -32,6 +35,8 @@ namespace OpenGL_Game.Scenes
             gameInstance = this;
             entityManager = new EntityManager();
             systemManager = new SystemManager();
+            collisionManager = new GameCollisionManager();
+            inputManager = new GameInputManager(this);
 
             // Set the title of the window
             sceneManager.Title = "Game";
@@ -39,8 +44,8 @@ namespace OpenGL_Game.Scenes
             sceneManager.renderer = Render;
             sceneManager.updater = Update;
             // Set Keyboard events to go to a method in this class
-            sceneManager.keyboardDownDelegate += Keyboard_KeyDown;
-            sceneManager.keyboardUpDelegate += Keyboard_KeyUp;
+            sceneManager.keyboardDownDelegate += inputManager.Keyboard_KeyDown;
+            sceneManager.keyboardUpDelegate += inputManager.Keyboard_KeyUp;
 
             // Enable Depth Testing
             GL.Enable(EnableCap.DepthTest);
@@ -55,7 +60,7 @@ namespace OpenGL_Game.Scenes
 
             CreateEntities();
             CreateSystems();
-            AssignCameraToEntity("Player");
+            AssignCameraToEntity(_playerName);
 
             // TODO: Add your initialization logic here
         }
@@ -64,12 +69,14 @@ namespace OpenGL_Game.Scenes
         {
             Entity newEntity;
 
-            newEntity = new Entity("Player");
-            newEntity.AddComponent(new ComponentPosition(2.0f, 0.5f, 0.7f));
+            newEntity = new Entity(_playerName);
+            newEntity.AddComponent(new ComponentPosition(-8.0f, 0.5f, 6f));
             newEntity.AddComponent(new ComponentGeometry("Geometry/Skybox/Skybox.obj"));
-            newEntity.AddComponent(new ComponentVelocity(-0.5f, 0.0f, 0.0f));
+            newEntity.AddComponent(new ComponentVelocity(0.0f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentShaderDefault());
             newEntity.AddComponent(new ComponentCollisionAABB(0.5f, -0.5f, 0.5f, -0.5f, 1.0f, -1.0f));
+            newEntity.AddComponent(new ComponentCollisionSphere(0.7f));
+            newEntity.AddComponent(new ComponentHealth(3));
             entityManager.AddEntity(newEntity);
 
             newEntity = new Entity("Moon");
@@ -77,7 +84,7 @@ namespace OpenGL_Game.Scenes
             newEntity.AddComponent(new ComponentGeometry("Geometry/Moon/moon.obj"));
             newEntity.AddComponent(new ComponentShaderDefault());
             //newEntity.AddComponent(new ComponentCollisionAABB(1, -1, 1, -1, 1, -1));
-            //newEntity.AddComponent(new ComponentCollisionSphere(1.0f));
+            newEntity.AddComponent(new ComponentCollisionSphere(1f));
             entityManager.AddEntity(newEntity);
 
             newEntity = new Entity("Wraith_Raider_Starship");
@@ -90,14 +97,14 @@ namespace OpenGL_Game.Scenes
             //newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
             entityManager.AddEntity(newEntity);
 
-            newEntity = new Entity("Intergalactic_Spaceship");
-            newEntity.AddComponent(new ComponentPosition(0.0f, -0.1f, 0.0f));
-            newEntity.AddComponent(new ComponentGeometry(
-            "Geometry/Intergalactic_Spaceship/Intergalactic_Spaceship.obj"));
-            newEntity.AddComponent(new ComponentShaderDefault());
+            //newEntity = new Entity("Intergalactic_Spaceship");
+            //newEntity.AddComponent(new ComponentPosition(0.0f, -0.1f, 0.0f));
+            //newEntity.AddComponent(new ComponentGeometry(
+            //"Geometry/Intergalactic_Spaceship/Intergalactic_Spaceship.obj"));
+            //newEntity.AddComponent(new ComponentShaderDefault());
             //newEntity.AddComponent(new ComponentCollisionLine(new Vector3(-1.0f, 0.2f, 0.0f)));
             //newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
-            entityManager.AddEntity(newEntity);
+            //entityManager.AddEntity(newEntity);
 
             newEntity = new Entity("Maze");
             newEntity.AddComponent(new ComponentPosition(29.0f, -1.0f, -22.0f));
@@ -148,13 +155,13 @@ namespace OpenGL_Game.Scenes
             newSystem = new SystemAudio(this);
             systemManager.AddSystem(newSystem);
 
-            newSystem = new SystemCollisionSphereSphere(entityManager.Entities());
+            newSystem = new SystemCollisionSphereSphere(collisionManager);
             systemManager.AddSystem(newSystem);
 
-            newSystem = new SystemCollisionInAABB(entityManager.Entities());
+            newSystem = new SystemCollisionInAABB(collisionManager);
             systemManager.AddSystem(newSystem);
 
-            newSystem = new SystemCollisionLineLine(entityManager.Entities());
+            newSystem = new SystemCollisionLineLine(collisionManager);
             systemManager.AddSystem(newSystem);
         }
 
@@ -167,51 +174,12 @@ namespace OpenGL_Game.Scenes
         {
             dt = (float)e.Time;
             //System.Console.WriteLine("fps=" + (int)(1.0/dt));
-            bool keyPressed = false;
-            if (keysPressed[(char)Keys.Up])
-            {
-                //cameraPosition.Position += camera.cameraDirection * 0.1f;
-                playerEntityVelocity.Velocity = camera.cameraDirection * 5f;
-                keyPressed = true;
-            }
-            if (keysPressed[(char)Keys.Down])
-            {
-                //cameraPosition.Position += camera.cameraDirection * -0.1f;
-                playerEntityVelocity.Velocity = camera.cameraDirection * -5f;
-                keyPressed = true;
-            }
-            if (keysPressed[(char)Keys.Left])
-            {
-                camera.RotateY(-0.01f);
-            }
-            if (keysPressed[(char)Keys.Right])
-            {
-                camera.RotateY(0.01f);
-            }
-            if (keysPressed[(char)Keys.M])
-            {
-                sceneManager.ChangeScene(SceneTypes.SCENE_GAME_OVER);
-            }
-            if(!keyPressed)
-            {
-                //playerEntityVelocity.Velocity = new Vector3(0, 0, 0);
-                playerEntityVelocity.Velocity = playerEntityVelocity.Velocity * new Vector3(0.2f, 0.2f, 0.2f);
-            }
 
             //Console.WriteLine(cameraPosition.Position);
             camera.cameraPosition = playerEntityPosition.Position;
             camera.UpdateView();
-
-            //foreach (IComponent component in entityManager.FindEntity("Wraith_Raider_Starship").Components)
-            //{
-            //    if (component.ComponentType == ComponentTypes.COMPONENT_POSITION)
-            //    {
-            //        ComponentPosition position = (ComponentPosition)component;
-            //        camera.cameraPosition = position.Position;
-            //        camera.UpdateView();
-            //        cameraPosition = position;
-            //    }
-            //}
+            inputManager.Update();
+            collisionManager.ProcessCollisions();
 
             // TODO: Add your update logic here
         }
@@ -229,7 +197,15 @@ namespace OpenGL_Game.Scenes
             systemManager.ActionSystems(entityManager);
 
             // Render score
-            GUI.DrawText("Score: 000", 30, 70, 30, 255, 255, 255);
+            //GUI.DrawText("Score: 000", 30, 70, 30, 255, 255, 255);
+            foreach (IComponent component in entityManager.FindEntity(_playerName).Components)
+            {
+                if (component.ComponentType == ComponentTypes.COMPONENT_HEALTH)
+                {
+                    ComponentHealth healthComponent = (ComponentHealth)component;
+                    GUI.DrawText("Lives: " + healthComponent.Health, 30, 70, 30, 255, 255, 255);
+                }
+            }
             GUI.Render();
         }
 
@@ -238,41 +214,15 @@ namespace OpenGL_Game.Scenes
         /// </summary>
         public override void Close()
         {
-            sceneManager.keyboardDownDelegate -= Keyboard_KeyDown;
+            sceneManager.keyboardDownDelegate -= inputManager.Keyboard_KeyDown;
             ResourceManager.RemoveAllAssets();
             systemManager.CloseSystems(entityManager);
             // Need to remove assets (except Text) from Resource Manager
         }
 
-        //public void Keyboard_KeyDown(KeyboardKeyEventArgs e)
-        //{
-        //    switch (e.Key)
-        //    {
-        //        case Keys.Up:
-        //            camera.MoveForward(0.1f);
-        //            break;
-        //        case Keys.Down:
-        //            camera.MoveForward(-0.1f);
-        //            keysPressed[(char)e.Key] = true;
-        //            break;
-        //        case Keys.Left:
-        //            camera.RotateY(-0.01f);
-        //            break;
-        //        case Keys.Right:
-        //            camera.RotateY(0.01f);
-        //            break;
-        //        case Keys.M:
-        //            sceneManager.ChangeScene(SceneTypes.SCENE_GAME_OVER);
-        //            break;
-        //    }
-        //}
-        public void Keyboard_KeyDown(KeyboardKeyEventArgs e)
+        public void GameOver()
         {
-            keysPressed[(char)e.Key] = true;
-        }
-        public void Keyboard_KeyUp(KeyboardKeyEventArgs e)
-        {
-            keysPressed[(char)e.Key] = false;
+            sceneManager.ChangeScene(SceneTypes.SCENE_GAME_OVER);
         }
 
         public void AssignCameraToEntity(string entityName)

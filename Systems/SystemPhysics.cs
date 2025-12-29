@@ -69,17 +69,20 @@ namespace OpenGL_Game.Systems
             get { return "SystemPhysics"; }
         }
 
-        public override void OnAction(Entity entity)
+        public override void OnAction(List<Entity> entities)
         {
-            if ((entity.Mask & MASK) == MASK)
+            foreach(Entity entity in entities)
             {
-                IComponent velocityComponent = GetComponent(entity, ComponentTypes.COMPONENT_VELOCITY);
-                ComponentVelocity velocity = ((ComponentVelocity)velocityComponent);
+                if ((entity.Mask & MASK) == MASK)
+                {
+                    IComponent velocityComponent = GetComponent(entity, ComponentTypes.COMPONENT_VELOCITY);
+                    ComponentVelocity velocity = ((ComponentVelocity)velocityComponent);
 
-                IComponent positionComponent = GetComponent(entity, ComponentTypes.COMPONENT_POSITION);
-                ComponentPosition position = ((ComponentPosition)positionComponent);
+                    IComponent positionComponent = GetComponent(entity, ComponentTypes.COMPONENT_POSITION);
+                    ComponentPosition position = ((ComponentPosition)positionComponent);
 
-                Motion(ref position, ref velocity);
+                    Motion(ref position, ref velocity);
+                }
             }
         }
 

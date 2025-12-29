@@ -6,7 +6,7 @@ namespace OpenGL_Game.Systems
 {
     abstract class System
     {
-        public IComponent GetComponent(Entity entity, ComponentTypes componentType)
+        public static IComponent GetComponent(Entity entity, ComponentTypes componentType)
         {
             List<IComponent> components = entity.Components;
 
@@ -18,7 +18,7 @@ namespace OpenGL_Game.Systems
             return iComponent;
         }
 
-        public List<IComponent> GetComponentList(Entity entity, ComponentTypes componentType)
+        public static List<IComponent> GetComponentList(Entity entity, ComponentTypes componentType)
         {
             List<IComponent> components = new (entity.Components);
 
@@ -35,7 +35,7 @@ namespace OpenGL_Game.Systems
         }
 
 
-        public abstract void OnAction(Entity entity);
+        public abstract void OnAction(List<Entity> entity);
 
         // Property signatures: 
         public string Name

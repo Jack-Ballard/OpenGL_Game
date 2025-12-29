@@ -17,10 +17,11 @@ namespace OpenGL_Game.Managers
             List<Entity> entityList = entityManager.Entities();
             foreach(Systems.System system in systemList)
             {
-                foreach(Entity entity in entityList)
-                {
-                    system.OnAction(entity);
-                }
+                system.OnAction(entityList);
+                //foreach (Entity entity in entityList)
+                //{
+                    
+                //}
             }
         }
 
