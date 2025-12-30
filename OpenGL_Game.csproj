@@ -49,135 +49,90 @@
     <ApplicationIcon />
   </PropertyGroup>
   <ItemGroup>
-    <None Update="Geometry\Intergalactic_Spaceship\Intergalactic_Spaceship.mtl">
+    <None Update="Game\Geometry\Intergalactic_Spaceship\Intergalactic_Spaceship.mtl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Intergalactic_Spaceship\Intergalactic_Spaceship.obj">
+    <None Update="Game\Geometry\Intergalactic_Spaceship\Intergalactic_Spaceship.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Intergalactic_Spaceship\Intergalactic_Spaceship_color_4.jpg">
+    <None Update="Game\Geometry\Intergalactic_Spaceship\Intergalactic_Spaceship_color_4.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Intergalactic_Spaceship\Intergalactic_Spaceship_nmap_2_Tris.jpg">
+    <None Update="Game\Geometry\Intergalactic_Spaceship\Intergalactic_Spaceship_nmap_2_Tris.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Intergalactic_Spaceship\Intergalactic_Spaceship_rough.jpg">
+    <None Update="Game\Geometry\Intergalactic_Spaceship\Intergalactic_Spaceship_rough.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Maze2\brick.jpg">
+    <None Update="Game\Geometry\Maze2\brick.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Maze2\Concrete.jpg">
+    <None Update="Game\Geometry\Maze2\Maze2.mtl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Maze2\Maze2.mtl">
+    <None Update="Game\Geometry\Maze2\Maze2.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Maze2\Maze2.obj">
+    <None Update="Game\Geometry\Maze2\Maze2Base.mtl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Maze2\Maze2Base.mtl">
+    <None Update="Game\Geometry\Maze2\Maze2Base.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Maze2\Maze2Base.obj">
+    <None Update="Game\Geometry\Maze\brick.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Maze\brick.jpg">
+    <None Update="Game\Geometry\Maze\maze.mtl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Maze\maze.mtl">
+    <None Update="Game\Geometry\Maze\maze.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Maze\maze.obj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Moon\moon.mtl">
+    <None Update="Game\Geometry\Moon\moon.mtl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Moon\moon.obj">
+    <None Update="Game\Geometry\Moon\moon.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Moon_Blender_41\moon41.mtl">
+    <None Update="Game\Geometry\Skybox\skybox.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Moon_Blender_41\moon41.obj">
+    <None Update="Game\Geometry\Skybox\Skybox.mtl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Moon_Blender_41\moon_diffuse.png">
+    <None Update="Game\Geometry\Skybox\Skybox.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Skybox\skybox.jpg">
+    <None Update="Game\Geometry\Text\text.mtl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Skybox\Skybox.mtl">
+    <None Update="Game\Geometry\Text\text.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Skybox\Skybox.obj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Text\text.mtl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Text\text.obj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship\Wraith_Raider_Starship.mtl">
+    <None Update="Game\Geometry\Wraith_Raider_Starship\Wraith_Raider_Starship.mtl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Geometry\Wraith_Raider_Starship\Wraith_Raider_Starship.obj">
+    <None Update="Game\Geometry\Wraith_Raider_Starship\Wraith_Raider_Starship.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship_41\bmq1.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship_41\cockpit_mtl1_diffcol.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship_41\d10.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship_41\d17.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship_41\d17b.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship_41\door_mtl1_diffcol.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship_41\door_mtl2_diffcol.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship_41\vj2c.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship_41\Wraith_Raider_Starship_41.mtl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship_41\Wraith_Raider_Starship_41.obj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Geometry\Wraith_Raider_Starship_41\yx1_02_01_01.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="OpenAL32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Shaders\no-lights.frag">
+    <None Update="Engine\Shaders\no-lights.frag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Shaders\text.frag">
+    <None Update="Engine\Shaders\text.frag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Shaders\single-light.frag">
+    <None Update="Engine\Shaders\single-light.frag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Shaders\text.vert">
+    <None Update="Engine\Shaders\text.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Shaders\single-light.vert">
+    <None Update="Engine\Shaders\single-light.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="wrap_oal.dll">
@@ -207,40 +162,40 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Audio\buzz.wav">
+    <Content Include="Game\Audio\buzz.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Geometry\Default\default.png">
+    <Content Include="Game\Geometry\Default\default.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Geometry\Moon\moon_diffuse.png">
+    <Content Include="Game\Geometry\Moon\moon_diffuse.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Geometry\Wraith_Raider_Starship\bmq1.jpg">
+    <Content Include="Game\Geometry\Wraith_Raider_Starship\bmq1.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Geometry\Wraith_Raider_Starship\cockpit_mtl1_diffcol.jpg">
+    <Content Include="Game\Geometry\Wraith_Raider_Starship\cockpit_mtl1_diffcol.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Geometry\Wraith_Raider_Starship\d10.jpg">
+    <Content Include="Game\Geometry\Wraith_Raider_Starship\d10.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Geometry\Wraith_Raider_Starship\d17.jpg">
+    <Content Include="Game\Geometry\Wraith_Raider_Starship\d17.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Geometry\Wraith_Raider_Starship\d17b.jpg">
+    <Content Include="Game\Geometry\Wraith_Raider_Starship\d17b.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Geometry\Wraith_Raider_Starship\door_mtl1_diffcol.jpg">
+    <Content Include="Game\Geometry\Wraith_Raider_Starship\door_mtl1_diffcol.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Geometry\Wraith_Raider_Starship\door_mtl2_diffcol.jpg">
+    <Content Include="Game\Geometry\Wraith_Raider_Starship\door_mtl2_diffcol.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Geometry\Wraith_Raider_Starship\vj2c.jpg">
+    <Content Include="Game\Geometry\Wraith_Raider_Starship\vj2c.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Geometry\Wraith_Raider_Starship\yx1_02_01_01.jpg">
+    <Content Include="Game\Geometry\Wraith_Raider_Starship\yx1_02_01_01.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -250,7 +205,7 @@
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.8" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Scenes\OldGameScene.cs" />
+    <Compile Remove="Game\Scenes\OldGameScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove=".gitattributes" />
