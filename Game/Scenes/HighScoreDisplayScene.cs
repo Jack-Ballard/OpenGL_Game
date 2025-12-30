@@ -16,14 +16,12 @@ namespace OpenGL_Game.Game.Scenes
     class HighScoreDisplayScene : Scene
     {
         SystemManager systemManager;
-        HighscoreManager highscoreManager;
         GameInputManager inputManager;
 
         bool singleFireTest = true;
         public HighScoreDisplayScene(SceneManager sceneManager) : base(sceneManager)
         {
             systemManager = new SystemManager();
-            highscoreManager = new HighscoreManager();
             inputManager = new GameInputManager(this);
 
             // Set the title of the window
@@ -53,7 +51,7 @@ namespace OpenGL_Game.Game.Scenes
                 //highscoreManager.AddHighscore("PlayerTwo", 2500);
                 Console.WriteLine("High Scores from Server:");
                 //Console.WriteLine(response);
-                foreach (var score in HighscoreManager.HighScores)
+                foreach (var score in HighscoreManager.GetHighScores())
                 {
                     Console.WriteLine($"{score.Item1}: {score.Item2}");
                 }
@@ -64,7 +62,6 @@ namespace OpenGL_Game.Game.Scenes
 
         public void ToMainMenuScene()
         {
-            HighscoreManager.Disconect();
             sceneManager.ChangeScene(SceneTypes.SCENE_MAIN_MENU);
         }
 
@@ -95,7 +92,7 @@ namespace OpenGL_Game.Game.Scenes
         public override void Close()
         {
             sceneManager.keyboardDownDelegate -= inputManager.Keyboard_KeyDown;
-            ResourceManager.RemoveAllAssets();
+            //ResourceManager.RemoveAllAssets();
         }
     }
 }

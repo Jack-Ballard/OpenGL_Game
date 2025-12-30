@@ -218,7 +218,7 @@ namespace OpenGL_Game.Game.Scenes
         public override void Close()
         {
             sceneManager.keyboardDownDelegate -= inputManager.Keyboard_KeyDown;
-            ResourceManager.RemoveAllAssets();
+            //ResourceManager.RemoveAllAssets();
             systemManager.CloseSystems(entityManager);
             // Need to remove assets (except Text) from Resource Manager
         }

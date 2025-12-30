@@ -94,6 +94,10 @@ namespace OpenGL_Game.Game.GameManagers
                 // Handle left mouse button click
                 scene.ToGameScene();
             }
+            if(keysPressed[(char)Keys.H])
+            {
+                scene.ToHighScoreScene();
+            }
         }
 
         public void HighScoreDisplaySceneAction(HighScoreDisplayScene scene)

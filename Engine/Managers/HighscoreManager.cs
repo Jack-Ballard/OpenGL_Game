@@ -10,16 +10,16 @@ using System.Windows.Forms;
 
 namespace OpenGL_Game.Engine.Managers
 {
-    class HighscoreManager
+    public static class HighscoreManager
     {
-        int port;
-        public static TcpClient client;
-        public static StreamReader reader;
-        public static StreamWriter writer;
-        public static List<(string, int)> HighScores = new List<(string, int)>();
+        private static int port;
+        private static TcpClient client;
+        private static StreamReader reader;
+        private static StreamWriter writer;
+        private static List<(string, int)> HighScores = new List<(string, int)>();
         public static (string, int) HighScore;
 
-        public HighscoreManager()
+        public static void Initalise()
         {
             port = 8080;
             client = new TcpClient("localhost", port);
@@ -27,11 +27,13 @@ namespace OpenGL_Game.Engine.Managers
             reader = new StreamReader(stream);
             writer = new StreamWriter(stream) { AutoFlush = true };
 
-            GetHighScores();
+            LoadHighScores();
         }
 
-        public void GetHighScores()
+        public static void LoadHighScores()
         {
+            if (writer == null) Initalise();
+
             // Request highscores from the server
             writer.WriteLine("GET_HIGHSCORES");
             string response = reader.ReadLine();
@@ -53,8 +55,16 @@ namespace OpenGL_Game.Engine.Managers
             }
         }
 
-        public void AddHighscore((string,int)Highscore)
+        public static List<(string, int)> GetHighScores()
         {
+            if (writer == null) Initalise();
+            return HighScores;
+        }
+
+        public static void AddHighscore((string,int)Highscore)
+        {
+            if (writer == null) Initalise();
+
             HighScores.Add(Highscore);
             // Sort descending by score
             HighScores = HighScores.OrderByDescending(hs => hs.Item2).ToList();
@@ -68,8 +78,10 @@ namespace OpenGL_Game.Engine.Managers
             HighScore.Item1 = playerName;
         }
 
-        public void SendHighscoresToServer()
+        public static void SendHighscoresToServer()
         {
+            if (writer == null) Initalise();
+
             // Send all highscores to the server as a batch
             // Example protocol: "SUBMIT_HIGHSCORES:Alice,1000;Bob,900;Carol,800"
             var highscoreString = string.Join(";", HighScores.Select(hs => $"{hs.Item1},{hs.Item2}"));
@@ -82,16 +94,13 @@ namespace OpenGL_Game.Engine.Managers
 
         public static void Close()
         {
-            writer.WriteLine("CLOSE_SERVER");
-            Disconect();
-        }
+            if(writer == null) Initalise();
 
-        public static void Disconect()
-        {
-            writer.WriteLine("DISCONNECT");
+            writer.WriteLine("CLOSE_SERVER");
             writer?.Dispose();
             reader?.Dispose();
             client?.Close();
         }
+
     }
 }

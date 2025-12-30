@@ -20,6 +20,8 @@ namespace OpenGL_Game.Game.Scenes
             sceneManager.updater = Update;
 
             sceneManager.mouseDelegate += inputManager.Mouse_BottonPressed;
+            sceneManager.keyboardDownDelegate += inputManager.Keyboard_KeyDown;
+            sceneManager.keyboardUpDelegate += inputManager.Keyboard_KeyUp;
 
             GL.ClearColor(0.2f, 0.75f, 1.0f, 1.0f);
         }
@@ -65,6 +67,8 @@ namespace OpenGL_Game.Game.Scenes
         public override void Close()
         {
             sceneManager.mouseDelegate -= inputManager.Mouse_BottonPressed;
+            sceneManager.keyboardDownDelegate -= inputManager.Keyboard_KeyDown;
+            sceneManager.keyboardUpDelegate -= inputManager.Keyboard_KeyUp;
         }
     }
 }
