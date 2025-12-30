@@ -67,7 +67,7 @@ namespace OpenGL_Game.Systems
                             }
                             if ((entityPosition.Position - position.Position).Length < collision.radius)
                             {
-                                Console.WriteLine("Collision Detected between sphere at position " + position.Position + " and point at position " + entityPosition.Position);
+                                //Console.WriteLine("Collision Detected between sphere at position " + position.Position + " and point at position " + entityPosition.Position);
                                 _collisionManager.Collision(entity1, entity2, COLLISIONTYPE.POINT_IN_SPHERE);
                             }
                         }

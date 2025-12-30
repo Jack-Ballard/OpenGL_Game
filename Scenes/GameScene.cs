@@ -28,8 +28,6 @@ namespace OpenGL_Game.Scenes
         //bool[] keysPressed = new bool[512];
         private string _playerName = "Player";
 
-
-
         public GameScene(SceneManager sceneManager) : base(sceneManager)
         {
             gameInstance = this;
@@ -88,10 +86,12 @@ namespace OpenGL_Game.Scenes
             entityManager.AddEntity(newEntity);
 
             newEntity = new Entity("Wraith_Raider_Starship");
-            newEntity.AddComponent(new ComponentPosition(2.0f, 0.5f, 0.0f));
+            newEntity.AddComponent(new ComponentPosition(15.0f, 0.0f, -15.0f));
             newEntity.AddComponent(new ComponentGeometry("Geometry/Wraith_Raider_Starship/Wraith_Raider_Starship.obj"));
             newEntity.AddComponent(new ComponentVelocity(-0.5f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentShaderDefault());
+            newEntity.AddComponent(new ComponentAITarget(new Vector3(-60f, 0.0f, -15f)));
+            newEntity.AddComponent(new ComponentCollisionSphere(1f));
             //newEntity.AddComponent(new ComponentAudio());
             //newEntity.AddComponent(new ComponentCollisionLine(new Vector3(-1.0f, 0.0f, 0.0f)));
             //newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
@@ -135,7 +135,6 @@ namespace OpenGL_Game.Scenes
             newEntity.AddComponent(new ComponentCollisionAABB(41f, 31f, -51f, -61f, 1, -1));
             newEntity.AddComponent(new ComponentCollisionAABB(46f, 36f, -46f, -56f, 1, -1));
 
-
             newEntity.AddComponent(new ComponentCollisionAABB(21f, 11f, -31f, -41f, 1, -1));
             newEntity.AddComponent(new ComponentCollisionAABB(46f, 36f, -31f, -41f, 1, -1));
 
@@ -162,6 +161,9 @@ namespace OpenGL_Game.Scenes
             systemManager.AddSystem(newSystem);
 
             newSystem = new SystemCollisionLineLine(collisionManager);
+            systemManager.AddSystem(newSystem);
+
+            newSystem = new SystemAISteering();
             systemManager.AddSystem(newSystem);
         }
 

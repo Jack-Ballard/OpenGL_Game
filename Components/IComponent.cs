@@ -13,7 +13,8 @@ namespace OpenGL_Game.Components
         COMPONENT_COLLISION_SPHERE = 1 << 5,
         COMPONENT_COLLISION_AABB = 1 << 6,
         COMPONENT_COLLISION_LINE = 1 << 7,
-        COMPONENT_HEALTH = 1 << 8
+        COMPONENT_HEALTH = 1 << 8,
+        COMPONENT_AI_TARGET = 1 << 9
     }
 
     interface IComponent
