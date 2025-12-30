@@ -44,7 +44,12 @@ namespace OpenGL_Game.Engine.Managers
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
             base.OnKeyDown(e);
-            if (e.Key == Keys.Escape) Close();
+
+            if (e.Key == Keys.Escape) 
+            { 
+                Close();
+                HighscoreManager.Close();
+            }
             if (keyboardDownDelegate != null) keyboardDownDelegate.Invoke(e);
         }
 
@@ -121,6 +126,9 @@ namespace OpenGL_Game.Engine.Managers
                     break;
                 case Scene.SceneTypes.SCENE_GAME_OVER:
                     scene = new GameOverScene(this);
+                    break;
+                case Scene.SceneTypes.SCENE_HIGH_SCORE_DISPLAY:
+                    scene = new HighScoreDisplayScene(this);
                     break;
             }
         }

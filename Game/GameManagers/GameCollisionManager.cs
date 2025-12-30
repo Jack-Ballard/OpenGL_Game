@@ -1,4 +1,5 @@
 ﻿using OpenGL_Game.Engine.Components;
+using OpenGL_Game.Engine.Managers;
 using OpenGL_Game.Engine.Objects;
 using OpenGL_Game.Engine.Systems;
 using OpenGL_Game.Game.Scenes;
@@ -9,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenGL_Game.Engine.Managers
+namespace OpenGL_Game.Game.GameManagers
 {
     class GameCollisionManager : CollisionManager
     {
@@ -34,10 +35,10 @@ namespace OpenGL_Game.Engine.Managers
                         else
                             entityWithHealth = collision.entity2;
 
-                        IComponent healthComponent = Systems.System.GetComponent(entityWithHealth, ComponentTypes.COMPONENT_HEALTH);
+                        IComponent healthComponent = Engine.Systems.System.GetComponent(entityWithHealth, ComponentTypes.COMPONENT_HEALTH);
                         ComponentHealth health = (ComponentHealth)healthComponent;
                         health.Health -= 1;
-                        IComponent positionComponent = Systems.System.GetComponent(entityWithHealth, ComponentTypes.COMPONENT_POSITION);
+                        IComponent positionComponent = Engine.Systems.System.GetComponent(entityWithHealth, ComponentTypes.COMPONENT_POSITION);
                         ComponentPosition position = (ComponentPosition)positionComponent;
                         position.Position = (-8.0f, 0.5f, 6f);
 
@@ -67,19 +68,19 @@ namespace OpenGL_Game.Engine.Managers
                             dynamicEntity = collision.entity1;
                         }
 
-                        positionComponent = Systems.System.GetComponent(staticEntity, ComponentTypes.COMPONENT_POSITION);
+                        positionComponent = Engine.Systems.System.GetComponent(staticEntity, ComponentTypes.COMPONENT_POSITION);
                         ComponentPosition position1 = (ComponentPosition)positionComponent;
-                        List<IComponent> collisionComponents = Systems.System.GetComponentList(staticEntity, ComponentTypes.COMPONENT_COLLISION_AABB);
+                        List<IComponent> collisionComponents = Engine.Systems.System.GetComponentList(staticEntity, ComponentTypes.COMPONENT_COLLISION_AABB);
                         List<ComponentCollisionAABB> collisions = new List<ComponentCollisionAABB>();
 
                         foreach (IComponent collComp in collisionComponents)
                             collisions.Add((ComponentCollisionAABB)collComp);
 
-                        positionComponent = Systems.System.GetComponent(dynamicEntity, ComponentTypes.COMPONENT_POSITION);
+                        positionComponent = Engine.Systems.System.GetComponent(dynamicEntity, ComponentTypes.COMPONENT_POSITION);
                         ComponentPosition position2 = (ComponentPosition)positionComponent;
-                        IComponent collisionComponent = Systems.System.GetComponent(dynamicEntity, ComponentTypes.COMPONENT_COLLISION_AABB);
+                        IComponent collisionComponent = Engine.Systems.System.GetComponent(dynamicEntity, ComponentTypes.COMPONENT_COLLISION_AABB);
                         ComponentCollisionAABB collision2 = (ComponentCollisionAABB)collisionComponent;
-                        IComponent velocityComponent = Systems.System.GetComponent(dynamicEntity, ComponentTypes.COMPONENT_VELOCITY);
+                        IComponent velocityComponent = Engine.Systems.System.GetComponent(dynamicEntity, ComponentTypes.COMPONENT_VELOCITY);
                         ComponentVelocity velocity = (ComponentVelocity)velocityComponent;
 
                         foreach (ComponentCollisionAABB collide in collisions)

@@ -1,0 +1,97 @@
+﻿using SkiaSharp;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace OpenGL_Game.Engine.Managers
+{
+    class HighscoreManager
+    {
+        int port;
+        public static TcpClient client;
+        public static StreamReader reader;
+        public static StreamWriter writer;
+        public static List<(string, int)> HighScores = new List<(string, int)>();
+        public static (string, int) HighScore;
+
+        public HighscoreManager()
+        {
+            port = 8080;
+            client = new TcpClient("localhost", port);
+            NetworkStream stream = client.GetStream();
+            reader = new StreamReader(stream);
+            writer = new StreamWriter(stream) { AutoFlush = true };
+
+            GetHighScores();
+        }
+
+        public void GetHighScores()
+        {
+            // Request highscores from the server
+            writer.WriteLine("GET_HIGHSCORES");
+            string response = reader.ReadLine();
+            // Example response: "Alice,1000;Bob,900;Carol,800"
+            if (!string.IsNullOrWhiteSpace(response))
+            {
+                HighScores.Clear();
+                var entries = response.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var entry in entries)
+                {
+                    var parts = entry.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length == 2 && int.TryParse(parts[1], out int score))
+                    {
+                        HighScores.Add((parts[0], score));
+                    }
+                }
+                // Ensure sorted after loading
+                HighScores = HighScores.OrderByDescending(hs => hs.Item2).ToList();
+            }
+        }
+
+        public void AddHighscore((string,int)Highscore)
+        {
+            HighScores.Add(Highscore);
+            // Sort descending by score
+            HighScores = HighScores.OrderByDescending(hs => hs.Item2).ToList();
+        }
+        public static void AddNewScore(int score)
+        {
+            HighScore.Item2 = score;
+        }
+        public static void AddNewName(string playerName)
+        {
+            HighScore.Item1 = playerName;
+        }
+
+        public void SendHighscoresToServer()
+        {
+            // Send all highscores to the server as a batch
+            // Example protocol: "SUBMIT_HIGHSCORES:Alice,1000;Bob,900;Carol,800"
+            var highscoreString = string.Join(";", HighScores.Select(hs => $"{hs.Item1},{hs.Item2}"));
+            writer.WriteLine($"SUBMIT_HIGHSCORES:{highscoreString}");
+
+            // Optionally, read server response (could be updated list or confirmation)
+            string response = reader.ReadLine();
+            // You can handle the response as needed
+        }
+
+        public static void Close()
+        {
+            writer.WriteLine("CLOSE_SERVER");
+            Disconect();
+        }
+
+        public static void Disconect()
+        {
+            writer.WriteLine("DISCONNECT");
+            writer?.Dispose();
+            reader?.Dispose();
+            client?.Close();
+        }
+    }
+}

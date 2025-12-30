@@ -8,6 +8,7 @@ using OpenGL_Game.Engine.Managers;
 using OpenGL_Game.Engine.Components;
 using OpenGL_Game.Engine.Objects;
 using OpenGL_Game.Engine.Systems;
+using OpenGL_Game.Game.GameManagers;
 
 namespace OpenGL_Game.Game.Scenes
 {
@@ -222,7 +223,7 @@ namespace OpenGL_Game.Game.Scenes
             // Need to remove assets (except Text) from Resource Manager
         }
 
-        public void GameOver()
+        public void ToMainMenuScene()
         {
             sceneManager.ChangeScene(SceneTypes.SCENE_GAME_OVER);
         }

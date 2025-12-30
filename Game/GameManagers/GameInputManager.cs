@@ -1,4 +1,5 @@
-﻿using OpenGL_Game.Game.Scenes;
+﻿using OpenGL_Game.Engine.Managers;
+using OpenGL_Game.Game.Scenes;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
@@ -8,17 +9,38 @@ using System.Text;
 using System.Threading.Tasks;
 using static OpenGL_Game.Game.Scenes.Scene;
 
-namespace OpenGL_Game.Engine.Managers
+namespace OpenGL_Game.Game.GameManagers
 {
     class GameInputManager : InputManager
     {
-        GameScene scene;
+        GameScene gameScene = null;
+        MainMenuScene mainMenuScene = null;
+        HighScoreDisplayScene highScoreDisplayScene = null;
         public GameInputManager(GameScene pScene)
         {
-            scene = pScene;
+            gameScene = pScene;
+        }
+        public GameInputManager(MainMenuScene pMainMenuScene)
+        {
+            mainMenuScene = pMainMenuScene;
+        }
+        public GameInputManager(HighScoreDisplayScene pHighScoreDisplayScene)
+        {
+            highScoreDisplayScene= pHighScoreDisplayScene;
         }
 
         public override void Update()
+        {
+            if (gameScene != null)
+                GameSceneAction(gameScene);
+            if(mainMenuScene != null)
+                MainMenuSceneAction(mainMenuScene);
+            if(highScoreDisplayScene != null)
+                HighScoreDisplaySceneAction(highScoreDisplayScene);
+
+        }
+
+        public void GameSceneAction(GameScene scene)
         {
             bool keyPressed = false;
             Vector3 CameraVector = (0, 0, 0);
@@ -56,7 +78,7 @@ namespace OpenGL_Game.Engine.Managers
             }
             if (keysPressed[(char)Keys.M])
             {
-                scene.GameOver();
+                scene.ToMainMenuScene();
             }
             if (!keyPressed)
             {
@@ -64,5 +86,23 @@ namespace OpenGL_Game.Engine.Managers
                 scene.playerEntityVelocity.Velocity = scene.playerEntityVelocity.Velocity * new Vector3(0.2f, 0.2f, 0.2f);
             }
         }
+
+        public void MainMenuSceneAction(MainMenuScene scene)
+        {
+            if (mouseButtonsPressed[(int)MouseButton.Left])
+            {
+                // Handle left mouse button click
+                scene.ToGameScene();
+            }
+        }
+
+        public void HighScoreDisplaySceneAction(HighScoreDisplayScene scene)
+        {
+            if(keysPressed[(char)Keys.M])
+            {
+                scene.ToMainMenuScene();
+            }
+        }
+
     }
 }
