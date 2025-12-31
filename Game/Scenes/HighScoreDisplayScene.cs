@@ -19,6 +19,7 @@ namespace OpenGL_Game.Game.Scenes
         GameInputManager inputManager;
 
         bool singleFireTest = true;
+        List<(string, int)> highScores = new List<(string, int)>();
         public HighScoreDisplayScene(SceneManager sceneManager) : base(sceneManager)
         {
             systemManager = new SystemManager();
@@ -45,17 +46,9 @@ namespace OpenGL_Game.Game.Scenes
         }
         public override void Update(FrameEventArgs e)
         {
-            if(singleFireTest)
+            if(highScores.Count == 0)
             {
-                //highscoreManager.AddHighscore("PlayerOne", 1500);
-                //highscoreManager.AddHighscore("PlayerTwo", 2500);
-                Console.WriteLine("High Scores from Server:");
-                //Console.WriteLine(response);
-                foreach (var score in HighscoreManager.GetHighScores())
-                {
-                    Console.WriteLine($"{score.Item1}: {score.Item2}");
-                }
-                singleFireTest = false;
+                highScores = HighscoreManager.GetHighScores();
             }
             inputManager.Update();
         }
@@ -86,6 +79,20 @@ namespace OpenGL_Game.Game.Scenes
             paint.Color = SKColors.DarkBlue;
             paint.Style = SKPaintStyle.Stroke;
             GUI.DrawText("High Scores:", sceneManager.Size.X * 0.5f, 150, paint);
+            paint.TextSize = 80;
+            paint.Color = SKColors.Yellow;
+            paint.Style = SKPaintStyle.Fill;
+            for(int i = 0; i < 2; i++)
+            {
+                foreach (var item in highScores)
+                {
+                    GUI.DrawText(item.Item1 + " - " + item.Item2.ToString(), sceneManager.Size.X * 0.5f, 200 + (1+highScores.IndexOf(item)) * 75, paint);
+                }
+                paint.Color = SKColors.DarkBlue;
+                paint.Style = SKPaintStyle.Stroke;
+            }
+            
+            
             GUI.Render();
         }
 

@@ -68,6 +68,12 @@ namespace OpenGL_Game.Engine.Managers
             HighScores.Add(Highscore);
             // Sort descending by score
             HighScores = HighScores.OrderByDescending(hs => hs.Item2).ToList();
+
+            if (HighScores.Count > 5)
+            {
+                HighScores.RemoveAt(HighScores.Count - 1);
+            }
+            SendHighscoresToServer();
         }
         public static void AddNewScore(int score)
         {
