@@ -12,7 +12,8 @@ namespace OpenGL_Game.Engine.Components
     {
         CHASE,
         ROAM,
-        IDLE
+        IDLE, 
+        DEAD
     }
     class ComponentAITarget : IComponent
     {

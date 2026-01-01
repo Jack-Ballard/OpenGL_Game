@@ -31,18 +31,25 @@ namespace OpenGL_Game.Game.GameManagers
                         // Handle sphere-sphere collision  
                         Console.WriteLine("Processing Sphere-Sphere Collision between Entity " + collision.entity1 + " and Entity " + collision.entity2);
                         Entity entityWithHealth;
+                        Entity entityWithoutHealth;
                         if ((collision.entity1.Mask & ComponentTypes.COMPONENT_HEALTH) != 0)
-                            entityWithHealth = collision.entity1;
+                        { entityWithHealth = collision.entity1; entityWithoutHealth = collision.entity2; }
+
                         else if ((collision.entity2.Mask & ComponentTypes.COMPONENT_HEALTH) != 0)
-                            entityWithHealth = collision.entity2;
+                        { entityWithHealth = collision.entity2; entityWithoutHealth = collision.entity1; }
                         else
                             break;
+
                         IComponent healthComponent = Engine.Systems.System.GetComponent(entityWithHealth, ComponentTypes.COMPONENT_HEALTH);
                         ComponentHealth health = (ComponentHealth)healthComponent;
                         health.Health -= 1;
                         IComponent positionComponent = Engine.Systems.System.GetComponent(entityWithHealth, ComponentTypes.COMPONENT_POSITION);
                         ComponentPosition position = (ComponentPosition)positionComponent;
                         position.Position = (-8.0f, 0.5f, 6f);
+
+                        positionComponent = Engine.Systems.System.GetComponent(entityWithoutHealth, ComponentTypes.COMPONENT_POSITION);
+                        position = (ComponentPosition)positionComponent;
+                        position.Position = (15.0f, 0.0f, -15.0f);
 
                         break;
                     case COLLISIONTYPE.POINT_IN_SPHERE:

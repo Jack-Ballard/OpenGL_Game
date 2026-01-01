@@ -19,7 +19,7 @@ namespace OpenGL_Game.Engine.Components
         public ComponentAudio()
         {
             // Setup Audio Source from the Audio Buffer
-            audioBuffer = ResourceManager.LoadAudio("Audio/buzz.wav");
+            audioBuffer = ResourceManager.LoadAudio("Game/Audio/buzz.wav");
             audioSource = AL.GenSource();
             AL.Source(audioSource, ALSourcei.Buffer, audioBuffer); // attach the buffer to a source
             AL.Source(audioSource, ALSourceb.Looping, true); // source loops infinitely

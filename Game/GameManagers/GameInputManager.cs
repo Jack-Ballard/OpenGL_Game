@@ -1,4 +1,5 @@
 ﻿using OpenGL_Game.Engine.Managers;
+using OpenGL_Game.Engine.Objects;
 using OpenGL_Game.Game.Scenes;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -69,12 +70,7 @@ namespace OpenGL_Game.Game.GameManagers
             }
             if (keysPressed[(char)Keys.Space])
             {
-                //foreach(Entity entity in scene.entityManager)
-                //{
-                //    Vector3 toEnemy = enemy.GetComponent<ComponentPosition>().Position - scene.playerEntityPosition.Position;
-                //    toEnemy.Normalize();
-                //    scene.playerEntityVelocity.Velocity = toEnemy * 10f;
-                //}
+                gameScene.Shoot();
             }
             if (keysPressed[(char)Keys.M])
             {

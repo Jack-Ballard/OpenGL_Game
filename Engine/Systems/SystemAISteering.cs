@@ -27,6 +27,17 @@ namespace OpenGL_Game.Engine.Systems
                     IComponent aiTargetComponent = GetComponent(entity, ComponentTypes.COMPONENT_AI_TARGET);
                     ComponentAITarget aiTarget = (ComponentAITarget)aiTargetComponent;
 
+                    if (aiTarget.Behaviour == AIbehaviour.DEAD)
+                    {
+                        if ((entity.Mask & ComponentTypes.COMPONENT_VELOCITY) != 0)
+                        {
+                            IComponent velocityComponent = GetComponent(entity, ComponentTypes.COMPONENT_VELOCITY);
+                            ComponentVelocity velocity = (ComponentVelocity)velocityComponent;
+                            velocity.Velocity = (0,0,0);
+                        }
+                        continue;
+                    }
+
                     IComponent lineComponent = GetComponent(entity, ComponentTypes.COMPONENT_COLLISION_LINE);
                     ComponentCollisionLine line = (ComponentCollisionLine)lineComponent;
 
@@ -51,8 +62,9 @@ namespace OpenGL_Game.Engine.Systems
                     bool playerObstructed = false;
                     if(aiTarget.Behaviour == AIbehaviour.ROAM)
                     {
-                        if(Vector3.Distance(position.Position, aiTarget.Target) < 5.0f)
+                        if(Vector3.Distance(position.Position, aiTarget.Target) < 1.0f)
                         {
+                            aiTarget.Target = aiTarget.Positions[random.Next(aiTarget.Positions.Count)];
                             aiTarget.Behaviour = AIbehaviour.IDLE;
                         }
                     }
@@ -87,15 +99,21 @@ namespace OpenGL_Game.Engine.Systems
                                 playerObstructed = true;
                             }
                         }
-                            
-                        
 
                         if (aiTarget.Behaviour == AIbehaviour.IDLE)
                         {
-                            if (visiblePositions.Count > 0)
+                            if(!aiTarget.Positions.Contains(aiTarget.Target))
+                            {
+                                aiTarget.Behaviour = AIbehaviour.ROAM;
+                            }
+                            else if (visiblePositions.Count > 0)
                             {
                                 aiTarget.Target = visiblePositions[random.Next(visiblePositions.Count)];
                                 aiTarget.Behaviour = AIbehaviour.ROAM;
+                            }
+                            else
+                            {
+                                // Fallback position?
                             }
                         }
                     }
@@ -121,7 +139,7 @@ namespace OpenGL_Game.Engine.Systems
                     {
                         IComponent velocityComponent = GetComponent(entity, ComponentTypes.COMPONENT_VELOCITY);
                         ComponentVelocity velocity = (ComponentVelocity)velocityComponent;
-                        float speed = 1.0f; // Define a speed for the entity
+                        float speed = 4.0f; // Define a speed for the entity
                         velocity.Velocity = direction * speed;
                     }
                     

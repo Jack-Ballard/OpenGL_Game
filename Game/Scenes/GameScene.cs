@@ -91,10 +91,21 @@ namespace OpenGL_Game.Game.Scenes
                 new Vector3(19.0f, 0.0f, 26.0f),
                 new Vector3(-34.0f, 0.0f, 25.0f),
                 new Vector3(-33.0f, 0.0f, -13.0f),
-                new Vector3(19.0f, 0.0f, -12.0f)
+                new Vector3(19.0f, 0.0f, -12.0f),
+
+                new Vector3(1.0f, 0.0f, 26.0f),
+                new Vector3(-17.0f, 0.0f, 25.0f),
+                new Vector3(1.0f, 0.0f, -12.0f),
+                new Vector3(-17.0f, 0.0f, -13.0f),
+
+                new Vector3(19.0f, 0.0f, 7.0f),
+                new Vector3(1.0f, 0.0f, 7.0f),
+                new Vector3(-17.0f, 0.0f, 6.0f),
+                new Vector3(-33.0f, 0.0f, 6.0f),
+
             };
 
-            newEntity = new Entity("Wraith_Raider_Starship");
+            newEntity = new Entity("Enemy_1");
             newEntity.AddComponent(new ComponentPosition(15.0f, 0.0f, -15.0f));
             newEntity.AddComponent(new ComponentGeometry("Game/Geometry/Wraith_Raider_Starship/Wraith_Raider_Starship.obj"));
             newEntity.AddComponent(new ComponentVelocity(-0.5f, 0.0f, 0.0f));
@@ -103,6 +114,19 @@ namespace OpenGL_Game.Game.Scenes
             //newEntity.AddComponent(new ComponentAITarget(new Vector3(-60f, 0.0f, -15f)));
             newEntity.AddComponent(new ComponentCollisionSphere(1f));
             //newEntity.AddComponent(new ComponentAudio());
+            newEntity.AddComponent(new ComponentCollisionLine(new Vector3(-1.0f, 0.0f, 0.0f)));
+            //newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
+            entityManager.AddEntity(newEntity);
+
+            newEntity = new Entity("Enemy_2");
+            newEntity.AddComponent(new ComponentPosition(-34.0f, 0.0f, 25.0f));
+            newEntity.AddComponent(new ComponentGeometry("Game/Geometry/Wraith_Raider_Starship/Wraith_Raider_Starship.obj"));
+            newEntity.AddComponent(new ComponentVelocity(-0.5f, 0.0f, 0.0f));
+            newEntity.AddComponent(new ComponentShaderDefault());
+            newEntity.AddComponent(new ComponentAITarget(_playerName, patrolPoints));
+            //newEntity.AddComponent(new ComponentAITarget(new Vector3(-60f, 0.0f, -15f)));
+            newEntity.AddComponent(new ComponentCollisionSphere(1f));
+            newEntity.AddComponent(new ComponentAudio());
             newEntity.AddComponent(new ComponentCollisionLine(new Vector3(-1.0f, 0.0f, 0.0f)));
             //newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
             entityManager.AddEntity(newEntity);
@@ -251,6 +275,30 @@ namespace OpenGL_Game.Game.Scenes
                     ComponentVelocity velocity = (ComponentVelocity)component;
                     playerEntityVelocity = velocity;
                 }
+            }
+        }
+
+        public void Shoot()
+        {
+            foreach(Entity entity in entityManager.Entities())
+            {
+                if(entity.Name == _playerName || (entity.Mask & ComponentTypes.COMPONENT_AI_TARGET) == 0)
+                {
+                    continue;
+                }
+                IComponent positionComponent = Engine.Systems.System.GetComponent(entity, ComponentTypes.COMPONENT_POSITION);
+                ComponentPosition position = (ComponentPosition)positionComponent;
+
+                IComponent aiComponent = Engine.Systems.System.GetComponent(entity, ComponentTypes.COMPONENT_AI_TARGET);
+                ComponentAITarget aiTarget = (ComponentAITarget)aiComponent;
+                float distance = Vector3.Distance(position.Position, playerEntityPosition.Position);
+                Vector3 targetPoint = playerEntityPosition.Position + distance * camera.cameraDirection.Normalized();
+
+                if (Vector3.Distance(targetPoint, position.Position) < 2)
+                {
+                    aiTarget.Behaviour = AIbehaviour.DEAD;
+                }
+
             }
         }
     }
