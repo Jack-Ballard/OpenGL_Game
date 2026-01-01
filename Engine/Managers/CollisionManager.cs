@@ -11,9 +11,10 @@ namespace OpenGL_Game.Engine.Managers
     {
         SPHERE_SPHERE,
         POINT_IN_SPHERE,
-        POINT_IN_BOX,
+        POINT_IN_AABB,
         AABB_AABB,
-        LINE_LINE
+        LINE_LINE,
+        AABB_LINE
     }
     struct Collision
     {

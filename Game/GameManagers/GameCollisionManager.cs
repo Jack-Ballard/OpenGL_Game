@@ -6,6 +6,7 @@ using OpenGL_Game.Game.Scenes;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,7 +35,8 @@ namespace OpenGL_Game.Game.GameManagers
                             entityWithHealth = collision.entity1;
                         else
                             entityWithHealth = collision.entity2;
-
+                        if(entityWithHealth == null)
+                            break;
                         IComponent healthComponent = Engine.Systems.System.GetComponent(entityWithHealth, ComponentTypes.COMPONENT_HEALTH);
                         ComponentHealth health = (ComponentHealth)healthComponent;
                         health.Health -= 1;
@@ -47,7 +49,7 @@ namespace OpenGL_Game.Game.GameManagers
                         // Handle point-in-sphere collision  
                         Console.WriteLine("Processing Point-In-Sphere Collision between Entity " + collision.entity1 + " and Entity " + collision.entity2);
                         break;
-                    case COLLISIONTYPE.POINT_IN_BOX:
+                    case COLLISIONTYPE.POINT_IN_AABB:
                         // Handle point-in-box collision  
                         Console.WriteLine("Processing Point-In-Box Collision between Entity " + collision.entity1 + " and Entity " + collision.entity2);
                         break;
@@ -111,6 +113,49 @@ namespace OpenGL_Game.Game.GameManagers
                             }
                         }
 
+                        break;
+                    case COLLISIONTYPE.AABB_LINE:
+                        // Handle AABB-line collision
+                        if (collision.entity1.Name == "Maze")
+                        {
+                            staticEntity = collision.entity1;
+                            dynamicEntity = collision.entity2;
+                        }
+                        else if (collision.entity2.Name == "Maze")
+                        {
+                            staticEntity = collision.entity2;
+                            dynamicEntity = collision.entity1;
+                        }
+                        else
+                        {
+                            Console.WriteLine("No Maze Entity found in AABB-Line Collision");
+                            break;
+                        }
+
+                        positionComponent = Engine.Systems.System.GetComponent(staticEntity, ComponentTypes.COMPONENT_POSITION);
+                        position1 = (ComponentPosition)positionComponent;
+                        collisionComponents = Engine.Systems.System.GetComponentList(staticEntity, ComponentTypes.COMPONENT_COLLISION_AABB);
+                        collisions = new List<ComponentCollisionAABB>();
+
+                        foreach (IComponent collComp in collisionComponents)
+                            collisions.Add((ComponentCollisionAABB)collComp);
+
+                        positionComponent = Engine.Systems.System.GetComponent(dynamicEntity, ComponentTypes.COMPONENT_POSITION);
+                        position2 = (ComponentPosition)positionComponent;
+                        collisionComponent = Engine.Systems.System.GetComponent(dynamicEntity, ComponentTypes.COMPONENT_COLLISION_LINE);
+                        ComponentCollisionLine collision2line = (ComponentCollisionLine)collisionComponent;
+
+                        if((dynamicEntity.Mask & ComponentTypes.COMPONENT_AI_TARGET) != 0)
+                        {
+                            IComponent AIcomponent = Engine.Systems.System.GetComponent(dynamicEntity, ComponentTypes.COMPONENT_AI_TARGET);
+                            ComponentAITarget aiTarget = (ComponentAITarget)AIcomponent;
+                            if(aiTarget.Behaviour == AIbehaviour.CHASE)
+                            {
+                                aiTarget.Behaviour = AIbehaviour.IDLE;
+                            }
+                        }
+
+                        Console.WriteLine("Processing AABB-Line Collision between Entity " + collision.entity1 + " and Entity " + collision.entity2 + " at " + position2.Position);
                         break;
                     default:
                         Console.WriteLine("Unknown Collision Type");

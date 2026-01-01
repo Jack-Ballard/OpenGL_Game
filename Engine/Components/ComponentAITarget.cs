@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using OpenGL_Game.Engine.Objects;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,23 +8,44 @@ using System.Threading.Tasks;
 
 namespace OpenGL_Game.Engine.Components
 {
+    enum AIbehaviour
+    {
+        CHASE,
+        ROAM,
+        IDLE
+    }
     class ComponentAITarget : IComponent
     {
-        Vector3 targetPosition;
-        public ComponentAITarget(float x, float y, float z)
+        private AIbehaviour behaviour;
+        string targetName; 
+        private List<Vector3> positions = new List<Vector3>();
+        private Vector3 target;
+
+        public ComponentAITarget(string name, List<Vector3> positions)
         {
-            targetPosition = new Vector3(x, y, z);
+            targetName = name;
+            this.positions = positions;
         }
 
-        public ComponentAITarget(Vector3 pos)
+        public string TargetName
         {
-            targetPosition = pos;
+            get { return targetName; }
+            set { targetName = value; }
         }
-
-        public Vector3 TargetPosition
+        public Vector3 Target
         {
-            get { return targetPosition; }
-            set { targetPosition = value; }
+            get { return target; }
+            set { target = value; }
+        }
+        public List<Vector3> Positions
+        {
+            get { return positions; }
+            set { positions = value; }
+        }
+        public AIbehaviour Behaviour
+        {
+            get { return behaviour; }
+            set { behaviour = value; }
         }
 
         public ComponentTypes ComponentType

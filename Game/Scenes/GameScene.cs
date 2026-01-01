@@ -9,6 +9,7 @@ using OpenGL_Game.Engine.Components;
 using OpenGL_Game.Engine.Objects;
 using OpenGL_Game.Engine.Systems;
 using OpenGL_Game.Game.GameManagers;
+using System.Collections.Generic;
 
 namespace OpenGL_Game.Game.Scenes
 {
@@ -86,15 +87,23 @@ namespace OpenGL_Game.Game.Scenes
             newEntity.AddComponent(new ComponentCollisionSphere(1f));
             entityManager.AddEntity(newEntity);
 
+            List<Vector3> patrolPoints = new List<Vector3>{
+                new Vector3(15.0f, 0.0f, -15.0f),
+                new Vector3(-15.0f, 0.0f, -15.0f),
+                new Vector3(-15.0f, 0.0f, 15.0f),
+                new Vector3(15.0f, 0.0f, 15.0f)
+            };
+
             newEntity = new Entity("Wraith_Raider_Starship");
             newEntity.AddComponent(new ComponentPosition(15.0f, 0.0f, -15.0f));
             newEntity.AddComponent(new ComponentGeometry("Game/Geometry/Wraith_Raider_Starship/Wraith_Raider_Starship.obj"));
             newEntity.AddComponent(new ComponentVelocity(-0.5f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentShaderDefault());
-            newEntity.AddComponent(new ComponentAITarget(new Vector3(-60f, 0.0f, -15f)));
+            newEntity.AddComponent(new ComponentAITarget(_playerName, patrolPoints));
+            //newEntity.AddComponent(new ComponentAITarget(new Vector3(-60f, 0.0f, -15f)));
             newEntity.AddComponent(new ComponentCollisionSphere(1f));
             //newEntity.AddComponent(new ComponentAudio());
-            //newEntity.AddComponent(new ComponentCollisionLine(new Vector3(-1.0f, 0.0f, 0.0f)));
+            newEntity.AddComponent(new ComponentCollisionLine(new Vector3(-1.0f, 0.0f, 0.0f)));
             //newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
             entityManager.AddEntity(newEntity);
 
@@ -114,30 +123,30 @@ namespace OpenGL_Game.Game.Scenes
             //newEntity.AddComponent(new ComponentGeometry("Geometry/Moon/moon.obj"));
             newEntity.AddComponent(new ComponentShaderDefault());
 
-            newEntity.AddComponent(new ComponentCollisionAABB(1f, 0f, 0f, -72f, 1, -1));
-            newEntity.AddComponent(new ComponentCollisionAABB(57f, 0f, -71f, -72f, 1, -1));
-            newEntity.AddComponent(new ComponentCollisionAABB(57f, 56f, 0f, -72f, 1, -1));
-            newEntity.AddComponent(new ComponentCollisionAABB(57f, 0f, 0f, -1f, 1, -1));
+            newEntity.AddComponent(new ComponentCollisionAABB(1f, 0f, 0f, -72f, 10, -10));
+            newEntity.AddComponent(new ComponentCollisionAABB(57f, 0f, -71f, -72f, 10, -10));
+            newEntity.AddComponent(new ComponentCollisionAABB(57f, 56f, 0f, -72f, 10, -10));
+            newEntity.AddComponent(new ComponentCollisionAABB(57f, 0f, 0f, -1f, 10, -10));
 
-            newEntity.AddComponent(new ComponentCollisionAABB(6f, 0f, -16f, -56f, 1, -1));
-            newEntity.AddComponent(new ComponentCollisionAABB(41f, 16f, -66f, -72f, 1, -1));
-            newEntity.AddComponent(new ComponentCollisionAABB(57f, 51f, -16f, -56f, 1, -1));
-            newEntity.AddComponent(new ComponentCollisionAABB(41f, 16f, 0f, -6f, 1, -1));
+            newEntity.AddComponent(new ComponentCollisionAABB(6f, 0f, -16f, -56f, 10, -10));
+            newEntity.AddComponent(new ComponentCollisionAABB(41f, 16f, -66f, -72f, 10, -10));
+            newEntity.AddComponent(new ComponentCollisionAABB(57f, 51f, -16f, -56f, 10, -10));
+            newEntity.AddComponent(new ComponentCollisionAABB(41f, 16f, 0f, -6f, 10, -10));
 
-            newEntity.AddComponent(new ComponentCollisionAABB(21f, 11f, -16f, -26f, 1, -1));
-            newEntity.AddComponent(new ComponentCollisionAABB(26f, 16f, -11f, -21f, 1, -1));
+            newEntity.AddComponent(new ComponentCollisionAABB(21f, 11f, -16f, -26f, 10, -10));
+            newEntity.AddComponent(new ComponentCollisionAABB(26f, 16f, -11f, -21f, 10, -10));
 
-            newEntity.AddComponent(new ComponentCollisionAABB(21f, 11f, -46f, -56f, 1, -1));
-            newEntity.AddComponent(new ComponentCollisionAABB(26f, 16f, -51f, -61f, 1, -1));
+            newEntity.AddComponent(new ComponentCollisionAABB(21f, 11f, -46f, -56f, 10, -10));
+            newEntity.AddComponent(new ComponentCollisionAABB(26f, 16f, -51f, -61f, 10, -10));
 
-            newEntity.AddComponent(new ComponentCollisionAABB(41f, 31f, -11f, -21f, 1, -1));
-            newEntity.AddComponent(new ComponentCollisionAABB(46f, 36f, -16f, -26f, 1, -1));
+            newEntity.AddComponent(new ComponentCollisionAABB(41f, 31f, -11f, -21f, 10, -10));
+            newEntity.AddComponent(new ComponentCollisionAABB(46f, 36f, -16f, -26f, 10, -10));
 
-            newEntity.AddComponent(new ComponentCollisionAABB(41f, 31f, -51f, -61f, 1, -1));
-            newEntity.AddComponent(new ComponentCollisionAABB(46f, 36f, -46f, -56f, 1, -1));
+            newEntity.AddComponent(new ComponentCollisionAABB(41f, 31f, -51f, -61f, 10, -10));
+            newEntity.AddComponent(new ComponentCollisionAABB(46f, 36f, -46f, -56f, 10, -10));
 
-            newEntity.AddComponent(new ComponentCollisionAABB(21f, 11f, -31f, -41f, 1, -1));
-            newEntity.AddComponent(new ComponentCollisionAABB(46f, 36f, -31f, -41f, 1, -1));
+            newEntity.AddComponent(new ComponentCollisionAABB(21f, 11f, -31f, -41f, 10, -10));
+            newEntity.AddComponent(new ComponentCollisionAABB(46f, 36f, -31f, -41f, 10, -10));
 
             entityManager.AddEntity(newEntity);
         }

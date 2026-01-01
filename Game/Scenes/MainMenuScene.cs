@@ -24,6 +24,7 @@ namespace OpenGL_Game.Game.Scenes
             sceneManager.keyboardUpDelegate += inputManager.Keyboard_KeyUp;
 
             GL.ClearColor(0.2f, 0.75f, 1.0f, 1.0f);
+            HighscoreManager.LoadHighScores();
         }
 
         public override void Update(FrameEventArgs e)

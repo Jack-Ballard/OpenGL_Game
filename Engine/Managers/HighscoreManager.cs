@@ -100,7 +100,7 @@ namespace OpenGL_Game.Engine.Managers
 
         public static void Close()
         {
-            if(writer == null) Initalise();
+            if(writer == null) return;
 
             writer.WriteLine("CLOSE_SERVER");
             writer?.Dispose();

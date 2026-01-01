@@ -8,6 +8,7 @@ using OpenGL_Game.Engine.Managers;
 using OpenGL_Game.Engine.Components;
 using OpenGL_Game.Engine.Objects;
 using OpenGL_Game.Game.Scenes;
+using System.Drawing;
 
 namespace OpenGL_Game.Engine.Systems
 {
@@ -37,7 +38,11 @@ namespace OpenGL_Game.Engine.Systems
                     {
                         foreach (Entity entity2 in entities)
                         {
-                            if ((entity2.Mask & MASK) == MASK && entity2 != entity1)
+                            if(entity1 == entity2)
+                            {
+                                continue;
+                            }
+                            if ((entity2.Mask & MASK) == MASK)
                             {
                                 positionComponent = GetComponent(entity2, ComponentTypes.COMPONENT_POSITION);
                                 ComponentPosition entity2Position = (ComponentPosition)positionComponent;
@@ -56,6 +61,23 @@ namespace OpenGL_Game.Engine.Systems
                                 if (TestCollision(collision, entity1position, positionToTest, entity2Collision))
                                 {
                                     _collisionManager.Collision(entity1, entity2, COLLISIONTYPE.AABB_AABB);
+                                }
+                            }
+                            else if ((entity2.Mask & ComponentTypes.COMPONENT_COLLISION_LINE) != 0)
+                            {
+                                positionComponent = GetComponent(entity2, ComponentTypes.COMPONENT_POSITION);
+                                ComponentPosition entity2position = (ComponentPosition)positionComponent;
+
+                                IComponent collisionComponent = GetComponent(entity2, ComponentTypes.COMPONENT_COLLISION_LINE);
+                                ComponentCollisionLine entity2Collision = (ComponentCollisionLine)collisionComponent;
+
+                                // Assume entity2Collision.line is a direction or offset from the start
+                                Vector3 lineStart = entity2position.Position;
+                                Vector3 lineEnd = entity2position.Position + entity2Collision.line;
+
+                                if (LineSegmentAABBIntersect(lineStart, lineEnd, collision, entity1position.Position))
+                                {
+                                    _collisionManager.Collision(entity1, entity2, COLLISIONTYPE.AABB_LINE);
                                 }
                             }
                         }
@@ -88,6 +110,49 @@ namespace OpenGL_Game.Engine.Systems
                 return true;
             }
             return false;
+        }
+        public static bool LineSegmentAABBIntersect(Vector3 segStart, Vector3 segEnd, ComponentCollisionAABB aabb, Vector3 aabbPos)
+        {
+            // Move AABB to world position
+            float minX = aabbPos.X + aabb.Xmin;
+            float maxX = aabbPos.X + aabb.Xmax;
+            float minY = aabbPos.Y + aabb.Ymin;
+            float maxY = aabbPos.Y + aabb.Ymax;
+            float minZ = aabbPos.Z + aabb.Zmin;
+            float maxZ = aabbPos.Z + aabb.Zmax;
+
+            Vector3 dir = segEnd - segStart;
+            float tmin = 0.0f;
+            float tmax = 1.0f;
+
+            for (int i = 0; i < 3; i++)
+            {
+                float start = i == 0 ? segStart.X : (i == 1 ? segStart.Y : segStart.Z);
+                float d = i == 0 ? dir.X : (i == 1 ? dir.Y : dir.Z);
+                float min = i == 0 ? minX : (i == 1 ? minY : minZ);
+                float max = i == 0 ? maxX : (i == 1 ? maxY : maxZ);
+
+                if (Math.Abs(d) < 1e-8)
+                {
+                    if (start < min || start > max)
+                        return false;
+                }
+                else
+                {
+                    float ood = 1.0f / d;
+                    float t1 = (min - start) * ood;
+                    float t2 = (max - start) * ood;
+                    if (t1 > t2)
+                    {
+                        float temp = t1; t1 = t2; t2 = temp;
+                    }
+                    tmin = Math.Max(tmin, t1);
+                    tmax = Math.Min(tmax, t2);
+                    if (tmin > tmax)
+                        return false;
+                }
+            }
+            return true;
         }
 
     }
