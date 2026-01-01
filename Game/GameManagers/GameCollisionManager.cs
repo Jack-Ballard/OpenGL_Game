@@ -33,9 +33,9 @@ namespace OpenGL_Game.Game.GameManagers
                         Entity entityWithHealth;
                         if ((collision.entity1.Mask & ComponentTypes.COMPONENT_HEALTH) != 0)
                             entityWithHealth = collision.entity1;
-                        else
+                        else if ((collision.entity2.Mask & ComponentTypes.COMPONENT_HEALTH) != 0)
                             entityWithHealth = collision.entity2;
-                        if(entityWithHealth == null)
+                        else
                             break;
                         IComponent healthComponent = Engine.Systems.System.GetComponent(entityWithHealth, ComponentTypes.COMPONENT_HEALTH);
                         ComponentHealth health = (ComponentHealth)healthComponent;

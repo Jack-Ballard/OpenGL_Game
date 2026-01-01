@@ -88,10 +88,10 @@ namespace OpenGL_Game.Game.Scenes
             entityManager.AddEntity(newEntity);
 
             List<Vector3> patrolPoints = new List<Vector3>{
-                new Vector3(15.0f, 0.0f, -15.0f),
-                new Vector3(-15.0f, 0.0f, -15.0f),
-                new Vector3(-15.0f, 0.0f, 15.0f),
-                new Vector3(15.0f, 0.0f, 15.0f)
+                new Vector3(19.0f, 0.0f, 26.0f),
+                new Vector3(-34.0f, 0.0f, 25.0f),
+                new Vector3(-33.0f, 0.0f, -13.0f),
+                new Vector3(19.0f, 0.0f, -12.0f)
             };
 
             newEntity = new Entity("Wraith_Raider_Starship");

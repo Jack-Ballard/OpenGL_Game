@@ -31,18 +31,22 @@ namespace OpenGL_Game.Engine.Systems
                     ComponentCollisionLine line = (ComponentCollisionLine)lineComponent;
 
                     ComponentPosition targetComponentPosition = null;
+                    Vector3 targetPosition = new Vector3();
                     foreach (Entity targetEntity in entities)
                     {
-                        if (targetEntity.Name == aiTarget.TargetName)
+                        if (targetEntity.Name == aiTarget.PlayerName)
                         {
                             IComponent targetPositionComponent = GetComponent(targetEntity, ComponentTypes.COMPONENT_POSITION);
                             targetComponentPosition = (ComponentPosition)targetPositionComponent;
-                            if (aiTarget.Behaviour == AIbehaviour.CHASE)
-                            {
-                                aiTarget.Target = targetComponentPosition.Position;
-                            }
+                            aiTarget.PlayerPosition = targetComponentPosition.Position;
+
                             break;
                         }
+                    }
+
+                    if (aiTarget.Behaviour == AIbehaviour.CHASE)
+                    {
+                        aiTarget.Target = aiTarget.PlayerPosition;
                     }
                     bool playerObstructed = false;
                     if(aiTarget.Behaviour == AIbehaviour.ROAM)
@@ -52,49 +56,47 @@ namespace OpenGL_Game.Engine.Systems
                             aiTarget.Behaviour = AIbehaviour.IDLE;
                         }
                     }
-                    if (aiTarget.Behaviour == AIbehaviour.IDLE)
+                    
+                    List<Vector3> visiblePositions = new (aiTarget.Positions);
+                    foreach(Entity entity2 in entities)
                     {
-                        List<Vector3> visiblePositions = new List<Vector3>();
-                        foreach(Entity entity2 in entities)
+                        if ((entity2.Mask & ComponentTypes.COMPONENT_COLLISION_AABB)==0 || entity2.Name == aiTarget.PlayerName)
                         {
-                            if ((entity2.Mask & ComponentTypes.COMPONENT_COLLISION_AABB)==0)
-                            {
-                                continue;
-                            }
-                            IComponent positionComponentAABB = GetComponent(entity2, ComponentTypes.COMPONENT_POSITION);
-                            ComponentPosition entitypositionAABB = (ComponentPosition)positionComponentAABB;
-
-                            List<IComponent> collisionComponentsAABB = GetComponentList(entity2, ComponentTypes.COMPONENT_COLLISION_AABB);
-                            List<ComponentCollisionAABB> entitycollisionsAABB = new List<ComponentCollisionAABB>();
-                            foreach (IComponent collComp in collisionComponentsAABB)
-                                entitycollisionsAABB.Add((ComponentCollisionAABB)collComp);
-
-                            foreach(ComponentCollisionAABB collisionAABB in entitycollisionsAABB)
-                            {
-                                foreach(Vector3 value in aiTarget.Positions
-                            .Where(pos => !SystemCollisionInAABB.LineSegmentAABBIntersect(position.Position, position.Position + line.line, collisionAABB, entitypositionAABB.Position))
-                            .ToList())
-                                {
-                                    visiblePositions.Add(value);
-                                }
-                                if(SystemCollisionInAABB.LineSegmentAABBIntersect(position.Position, targetComponentPosition.Position, collisionAABB, entitypositionAABB.Position))
-                                {
-                                    playerObstructed = true;
-                                }
-                            }
-                            
+                            continue;
                         }
+                        IComponent positionComponentAABB = GetComponent(entity2, ComponentTypes.COMPONENT_POSITION);
+                        ComponentPosition entitypositionAABB = (ComponentPosition)positionComponentAABB;
+
+                        List<IComponent> collisionComponentsAABB = GetComponentList(entity2, ComponentTypes.COMPONENT_COLLISION_AABB);
+                        List<ComponentCollisionAABB> entitycollisionsAABB = new List<ComponentCollisionAABB>();
+                        foreach (IComponent collComp in collisionComponentsAABB)
+                            entitycollisionsAABB.Add((ComponentCollisionAABB)collComp);
+
+                        foreach(ComponentCollisionAABB collisionAABB in entitycollisionsAABB)
+                        {
+                            if (aiTarget.Behaviour == AIbehaviour.IDLE)
+                            {
+                                foreach (Vector3 value in aiTarget.Positions)
+                                {
+                                    if (SystemCollisionInAABB.LineSegmentAABBIntersect(position.Position, value, collisionAABB, entitypositionAABB.Position))
+                                        visiblePositions.Remove(value);
+                                }
+                            }
+                            if(SystemCollisionInAABB.LineSegmentAABBIntersect(position.Position, targetComponentPosition.Position, collisionAABB, entitypositionAABB.Position))
+                            {
+                                playerObstructed = true;
+                            }
+                        }
+                            
                         
 
-                        if (visiblePositions.Count > 0)
+                        if (aiTarget.Behaviour == AIbehaviour.IDLE)
                         {
-                            aiTarget.Target = visiblePositions[random.Next(visiblePositions.Count)];
-                            aiTarget.Behaviour = AIbehaviour.ROAM;
-                        }
-                        else
-                        {
-                            // Fallback: stay in place
-                            aiTarget.Target = position.Position;
+                            if (visiblePositions.Count > 0)
+                            {
+                                aiTarget.Target = visiblePositions[random.Next(visiblePositions.Count)];
+                                aiTarget.Behaviour = AIbehaviour.ROAM;
+                            }
                         }
                     }
                     if(!playerObstructed)
@@ -113,7 +115,7 @@ namespace OpenGL_Game.Engine.Systems
                     {
                         IComponent collisionLineComponent = GetComponent(entity, ComponentTypes.COMPONENT_COLLISION_LINE);
                         ComponentCollisionLine collisionLine = (ComponentCollisionLine)collisionLineComponent;
-                        collisionLine.line = aiTarget.Target - position.Position;
+                        collisionLine.line = aiTarget.PlayerPosition - position.Position;
                     }
                     if ((entity.Mask & ComponentTypes.COMPONENT_VELOCITY) != 0)
                     {

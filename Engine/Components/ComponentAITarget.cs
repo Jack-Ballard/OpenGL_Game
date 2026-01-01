@@ -17,20 +17,26 @@ namespace OpenGL_Game.Engine.Components
     class ComponentAITarget : IComponent
     {
         private AIbehaviour behaviour;
-        string targetName; 
+        string playerName; 
         private List<Vector3> positions = new List<Vector3>();
         private Vector3 target;
+        private Vector3 playerPosition;
 
         public ComponentAITarget(string name, List<Vector3> positions)
         {
-            targetName = name;
+            playerName = name;
             this.positions = positions;
         }
 
-        public string TargetName
+        public string PlayerName
         {
-            get { return targetName; }
-            set { targetName = value; }
+            get { return playerName; }
+            set { playerName = value; }
+        }
+        public Vector3 PlayerPosition
+        {
+            get { return playerPosition;  }
+            set { playerPosition = value; }
         }
         public Vector3 Target
         {
