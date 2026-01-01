@@ -126,7 +126,7 @@ namespace OpenGL_Game.Game.Scenes
             newEntity.AddComponent(new ComponentAITarget(_playerName, patrolPoints));
             //newEntity.AddComponent(new ComponentAITarget(new Vector3(-60f, 0.0f, -15f)));
             newEntity.AddComponent(new ComponentCollisionSphere(1f));
-            newEntity.AddComponent(new ComponentAudio());
+            newEntity.AddComponent(new ComponentAudio("Game/Audio/buzz.wav"));
             newEntity.AddComponent(new ComponentCollisionLine(new Vector3(-1.0f, 0.0f, 0.0f)));
             //newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
             entityManager.AddEntity(newEntity);

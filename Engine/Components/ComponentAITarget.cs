@@ -27,6 +27,8 @@ namespace OpenGL_Game.Engine.Components
         {
             playerName = name;
             this.positions = positions;
+            behaviour = AIbehaviour.IDLE;
+            target = positions[0];
         }
 
         public string PlayerName
