@@ -70,7 +70,7 @@ namespace OpenGL_Game.Game.GameManagers
             }
             if (keysPressed[(char)Keys.Space])
             {
-                gameScene.Shoot();
+                gameScene.shootManager.Shoot();
             }
             if (keysPressed[(char)Keys.M])
             {

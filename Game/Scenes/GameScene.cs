@@ -23,6 +23,7 @@ namespace OpenGL_Game.Game.Scenes
         SystemManager systemManager;
         CollisionManager collisionManager;
         InputManager inputManager;
+        public GameShootManager shootManager;
         //public Camera camera;
         public ComponentPosition playerEntityPosition;
         public ComponentVelocity playerEntityVelocity;
@@ -37,6 +38,7 @@ namespace OpenGL_Game.Game.Scenes
             systemManager = new SystemManager();
             collisionManager = new GameCollisionManager();
             inputManager = new GameInputManager(this);
+            shootManager = new GameShootManager(entityManager);
 
             // Set the title of the window
             sceneManager.Title = "Game";
@@ -77,14 +79,18 @@ namespace OpenGL_Game.Game.Scenes
             newEntity.AddComponent(new ComponentCollisionAABB(0.5f, -0.5f, 0.5f, -0.5f, 1.0f, -1.0f));
             newEntity.AddComponent(new ComponentCollisionSphere(0.7f));
             newEntity.AddComponent(new ComponentHealth(3));
+            newEntity.AddComponent(new ComponentAudio("Game/Audio/hurt.wav", false));
             entityManager.AddEntity(newEntity);
 
-            newEntity = new Entity("Moon");
-            newEntity.AddComponent(new ComponentPosition(-2.0f, 0.0f, 0.0f));
+            newEntity = new Entity("Item1");
+            newEntity.AddComponent(new ComponentPosition(20.0f, 0.0f, 30.0f));
             newEntity.AddComponent(new ComponentGeometry("Game/Geometry/Moon/moon.obj"));
             newEntity.AddComponent(new ComponentShaderDefault());
             //newEntity.AddComponent(new ComponentCollisionAABB(1, -1, 1, -1, 1, -1));
             newEntity.AddComponent(new ComponentCollisionSphere(1f));
+            newEntity.AddComponent(new ComponentAudio("Game/Audio/itemHover.wav"));
+
+
             entityManager.AddEntity(newEntity);
 
             List<Vector3> patrolPoints = new List<Vector3>{
@@ -112,9 +118,10 @@ namespace OpenGL_Game.Game.Scenes
             newEntity.AddComponent(new ComponentShaderDefault());
             newEntity.AddComponent(new ComponentAITarget(_playerName, patrolPoints));
             //newEntity.AddComponent(new ComponentAITarget(new Vector3(-60f, 0.0f, -15f)));
-            newEntity.AddComponent(new ComponentCollisionSphere(1f));
-            //newEntity.AddComponent(new ComponentAudio());
+            newEntity.AddComponent(new ComponentCollisionSphere(1f)); 
+            newEntity.AddComponent(new ComponentAudio("Game/Audio/buzz.wav"));
             newEntity.AddComponent(new ComponentCollisionLine(new Vector3(-1.0f, 0.0f, 0.0f)));
+            newEntity.AddComponent(new ComponentHealth(3));
             //newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
             entityManager.AddEntity(newEntity);
 
@@ -127,6 +134,7 @@ namespace OpenGL_Game.Game.Scenes
             //newEntity.AddComponent(new ComponentAITarget(new Vector3(-60f, 0.0f, -15f)));
             newEntity.AddComponent(new ComponentCollisionSphere(1f));
             newEntity.AddComponent(new ComponentAudio("Game/Audio/buzz.wav"));
+            newEntity.AddComponent(new ComponentHealth(3));
             newEntity.AddComponent(new ComponentCollisionLine(new Vector3(-1.0f, 0.0f, 0.0f)));
             //newEntity.AddComponent(new ComponentCollisionAABB(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f));
             entityManager.AddEntity(newEntity);
@@ -215,6 +223,7 @@ namespace OpenGL_Game.Game.Scenes
             camera.cameraPosition = playerEntityPosition.Position;
             camera.UpdateView();
             inputManager.Update();
+            shootManager.Update(camera, _playerName, playerEntityPosition);
             collisionManager.ProcessCollisions();
 
             // TODO: Add your update logic here
@@ -240,6 +249,22 @@ namespace OpenGL_Game.Game.Scenes
                 {
                     ComponentHealth healthComponent = (ComponentHealth)component;
                     GUI.DrawText("Lives: " + healthComponent.Health, 30, 70, 30, 255, 255, 255);
+                }
+            }
+            foreach (IComponent component in entityManager.FindEntity("Enemy_1").Components)
+            {
+                if (component.ComponentType == ComponentTypes.COMPONENT_HEALTH)
+                {
+                    ComponentHealth healthComponent = (ComponentHealth)component;
+                    GUI.DrawText("Enemy 1 Health: " + healthComponent.Health, 30, 100, 30, 255, 255, 255);
+                }
+            }
+            foreach (IComponent component in entityManager.FindEntity("Enemy_2").Components)
+            {
+                if (component.ComponentType == ComponentTypes.COMPONENT_HEALTH)
+                {
+                    ComponentHealth healthComponent = (ComponentHealth)component;
+                    GUI.DrawText("Enemy 2 Health: " + healthComponent.Health, 30, 130, 30, 255, 255, 255);
                 }
             }
             GUI.Render();
@@ -278,28 +303,6 @@ namespace OpenGL_Game.Game.Scenes
             }
         }
 
-        public void Shoot()
-        {
-            foreach(Entity entity in entityManager.Entities())
-            {
-                if(entity.Name == _playerName || (entity.Mask & ComponentTypes.COMPONENT_AI_TARGET) == 0)
-                {
-                    continue;
-                }
-                IComponent positionComponent = Engine.Systems.System.GetComponent(entity, ComponentTypes.COMPONENT_POSITION);
-                ComponentPosition position = (ComponentPosition)positionComponent;
-
-                IComponent aiComponent = Engine.Systems.System.GetComponent(entity, ComponentTypes.COMPONENT_AI_TARGET);
-                ComponentAITarget aiTarget = (ComponentAITarget)aiComponent;
-                float distance = Vector3.Distance(position.Position, playerEntityPosition.Position);
-                Vector3 targetPoint = playerEntityPosition.Position + distance * camera.cameraDirection.Normalized();
-
-                if (Vector3.Distance(targetPoint, position.Position) < 2)
-                {
-                    aiTarget.Behaviour = AIbehaviour.DEAD;
-                }
-
-            }
-        }
+        
     }
 }

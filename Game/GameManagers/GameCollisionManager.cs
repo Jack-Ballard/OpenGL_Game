@@ -30,26 +30,50 @@ namespace OpenGL_Game.Game.GameManagers
                     case COLLISIONTYPE.SPHERE_SPHERE:
                         // Handle sphere-sphere collision  
                         Console.WriteLine("Processing Sphere-Sphere Collision between Entity " + collision.entity1 + " and Entity " + collision.entity2);
-                        Entity entityWithHealth;
-                        Entity entityWithoutHealth;
-                        if ((collision.entity1.Mask & ComponentTypes.COMPONENT_HEALTH) != 0)
-                        { entityWithHealth = collision.entity1; entityWithoutHealth = collision.entity2; }
+                        Entity entityPlayer;
+                        Entity entityNotPlayer;
+                        if (collision.entity1.Name == "Player")
+                        { entityPlayer = collision.entity1; entityNotPlayer = collision.entity2; }
 
-                        else if ((collision.entity2.Mask & ComponentTypes.COMPONENT_HEALTH) != 0)
-                        { entityWithHealth = collision.entity2; entityWithoutHealth = collision.entity1; }
+                        else if (collision.entity2.Name == "Player")
+                        { entityPlayer = collision.entity2; entityNotPlayer = collision.entity1; }
                         else
                             break;
 
-                        IComponent healthComponent = Engine.Systems.System.GetComponent(entityWithHealth, ComponentTypes.COMPONENT_HEALTH);
+                        IComponent healthComponent = Engine.Systems.System.GetComponent(entityPlayer, ComponentTypes.COMPONENT_HEALTH);
                         ComponentHealth health = (ComponentHealth)healthComponent;
-                        health.Health -= 1;
-                        IComponent positionComponent = Engine.Systems.System.GetComponent(entityWithHealth, ComponentTypes.COMPONENT_POSITION);
+                        IComponent positionComponent = Engine.Systems.System.GetComponent(entityPlayer, ComponentTypes.COMPONENT_POSITION);
                         ComponentPosition position = (ComponentPosition)positionComponent;
-                        position.Position = (-8.0f, 0.5f, 6f);
 
-                        positionComponent = Engine.Systems.System.GetComponent(entityWithoutHealth, ComponentTypes.COMPONENT_POSITION);
-                        position = (ComponentPosition)positionComponent;
-                        position.Position = (15.0f, 0.0f, -15.0f);
+                        if(entityNotPlayer.Name == "Item1")
+                        {
+                            ComponentAudio audio = Engine.Systems.System.GetComponent(entityNotPlayer, ComponentTypes.COMPONENT_AUDIO) as ComponentAudio;
+                            audio.StopSound();
+                            audio.PlaySound("Game/Audio/itemCollected.wav");
+                            ComponentPosition componentPosition = Engine.Systems.System.GetComponent(entityNotPlayer, ComponentTypes.COMPONENT_POSITION) as ComponentPosition;
+                            componentPosition.Position = new Vector3(-100.0f, -100.0f, -100.0f); // Move the powerup out of the way
+                            // Powerup 1
+                        }
+                        else if(entityNotPlayer.Name == "Item2")
+                        {
+                            ComponentAudio audio = Engine.Systems.System.GetComponent(entityNotPlayer, ComponentTypes.COMPONENT_AUDIO) as ComponentAudio;
+                            audio.StopSound();
+                            audio.PlaySound("Game/Audio/itemCollected.wav");
+                            ComponentPosition componentPosition = Engine.Systems.System.GetComponent(entityNotPlayer, ComponentTypes.COMPONENT_POSITION) as ComponentPosition;
+                            componentPosition.Position = new Vector3(-100.0f, -100.0f, -100.0f); // Move the powerup out of the way
+                            // Powerup 2
+                        }
+                        else
+                        {
+                            position.Position = (-8.0f, 0.5f, 6f);
+                            health.Health--;
+                            ComponentAudio audio = Engine.Systems.System.GetComponent(entityPlayer, ComponentTypes.COMPONENT_AUDIO) as ComponentAudio;
+                            audio.PlaySound("Game/Audio/hurt.wav");
+                            positionComponent = Engine.Systems.System.GetComponent(entityNotPlayer, ComponentTypes.COMPONENT_POSITION);
+                            position = (ComponentPosition)positionComponent;
+                            position.Position = (15.0f, 0.0f, -15.0f); // This is me hardcoding the respawn point for the player and enemy, this is bad don't do this at home kids
+
+                        }
 
                         break;
                     case COLLISIONTYPE.POINT_IN_SPHERE:

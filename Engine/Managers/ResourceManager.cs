@@ -151,10 +151,17 @@ namespace OpenGL_Game.Engine.Managers
                 int block_align = reader.ReadInt16();
                 int bits_per_sample = reader.ReadInt16();
 
-                string data_signature = new string(reader.ReadChars(4));
-                if (data_signature != "data")
-                    throw new NotSupportedException("Specified wave file is not supported.");
-
+                //string data_signature = new string(reader.ReadChars(4));
+                //if (data_signature != "data")
+                //    throw new NotSupportedException("Specified wave file is not supported.");
+                string data_signature;
+                do
+                {
+                    data_signature = new string(reader.ReadChars(4));
+                    int chunk_size = reader.ReadInt32();
+                    if (data_signature != "data")
+                        reader.BaseStream.Seek(chunk_size, SeekOrigin.Current);
+                } while (data_signature != "data");
                 int data_chunk_size = reader.ReadInt32();
 
                 channels = num_channels;
