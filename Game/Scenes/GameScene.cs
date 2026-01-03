@@ -24,21 +24,25 @@ namespace OpenGL_Game.Game.Scenes
         CollisionManager collisionManager;
         InputManager inputManager;
         public GameShootManager shootManager;
+        GameEndManager endManager;
         //public Camera camera;
         public ComponentPosition playerEntityPosition;
         public ComponentVelocity playerEntityVelocity;
         public static GameScene gameInstance;
         //bool[] keysPressed = new bool[512];
         private string _playerName = "Player";
+        public float CountdownTimer = 120f; // 2 minutes in seconds
+        public bool TimerExpired => CountdownTimer <= 0f;
 
         public GameScene(SceneManager sceneManager) : base(sceneManager)
         {
             gameInstance = this;
             entityManager = new EntityManager();
             systemManager = new SystemManager();
-            collisionManager = new GameCollisionManager();
+            collisionManager = new GameCollisionManager(this);
             inputManager = new GameInputManager(this);
-            shootManager = new GameShootManager(entityManager);
+            shootManager = new GameShootManager(entityManager, this, _playerName);
+            endManager = new GameEndManager(entityManager, _playerName);
 
             // Set the title of the window
             sceneManager.Title = "Game";
@@ -60,6 +64,7 @@ namespace OpenGL_Game.Game.Scenes
             // Set Camera
             camera = new Camera(new Vector3(0, 0.5f, 7), new Vector3(0, 0.5f, 0), sceneManager.Size.X / (float)sceneManager.Size.Y, 0.1f, 100f);
 
+            HighscoreManager.AddNewScore(0);
             CreateEntities();
             CreateSystems();
             AssignCameraToEntity(_playerName);
@@ -77,7 +82,7 @@ namespace OpenGL_Game.Game.Scenes
             newEntity.AddComponent(new ComponentVelocity(0.0f, 0.0f, 0.0f));
             newEntity.AddComponent(new ComponentShaderDefault());
             newEntity.AddComponent(new ComponentCollisionAABB(0.5f, -0.5f, 0.5f, -0.5f, 1.0f, -1.0f));
-            newEntity.AddComponent(new ComponentCollisionSphere(0.7f));
+            newEntity.AddComponent(new ComponentCollisionSphere(1f));
             newEntity.AddComponent(new ComponentHealth(3));
             newEntity.AddComponent(new ComponentAudio("Game/Audio/hurt.wav", false));
             entityManager.AddEntity(newEntity);
@@ -89,8 +94,15 @@ namespace OpenGL_Game.Game.Scenes
             //newEntity.AddComponent(new ComponentCollisionAABB(1, -1, 1, -1, 1, -1));
             newEntity.AddComponent(new ComponentCollisionSphere(1f));
             newEntity.AddComponent(new ComponentAudio("Game/Audio/itemHover.wav"));
+            entityManager.AddEntity(newEntity);
 
-
+            newEntity = new Entity("Item2");
+            newEntity.AddComponent(new ComponentPosition(-36.0f, 0.0f, -18.0f));
+            newEntity.AddComponent(new ComponentGeometry("Game/Geometry/Moon/moon.obj"));
+            newEntity.AddComponent(new ComponentShaderDefault());
+            //newEntity.AddComponent(new ComponentCollisionAABB(1, -1, 1, -1, 1, -1));
+            newEntity.AddComponent(new ComponentCollisionSphere(1f));
+            newEntity.AddComponent(new ComponentAudio("Game/Audio/itemHover.wav"));
             entityManager.AddEntity(newEntity);
 
             List<Vector3> patrolPoints = new List<Vector3>{
@@ -219,13 +231,29 @@ namespace OpenGL_Game.Game.Scenes
             dt = (float)e.Time;
             //System.Console.WriteLine("fps=" + (int)(1.0/dt));
 
+            // Countdown timer logic
+            if (CountdownTimer > 0f)
+            {
+                // Display countdown timer
+                int minutes = (int)(CountdownTimer / 60);
+                int seconds = (int)(CountdownTimer % 60);
+                GUI.DrawText($"Time Left: {minutes:D2}:{seconds:D2}", 30, 40, 30, 255, 255, 0);
+                CountdownTimer -= dt;
+                if (CountdownTimer < 0f)
+                    CountdownTimer = 0f;
+            }
+
             //Console.WriteLine(cameraPosition.Position);
             camera.cameraPosition = playerEntityPosition.Position;
             camera.UpdateView();
             inputManager.Update();
-            shootManager.Update(camera, _playerName, playerEntityPosition);
+            shootManager.Update();
             collisionManager.ProcessCollisions();
-
+            if(endManager.CheckGameEnd(TimerExpired))
+            {
+                HighscoreManager.AddToScore((int)CountdownTimer);
+                ToGameOverScene();
+            }
             // TODO: Add your update logic here
         }
 
@@ -267,6 +295,9 @@ namespace OpenGL_Game.Game.Scenes
                     GUI.DrawText("Enemy 2 Health: " + healthComponent.Health, 30, 130, 30, 255, 255, 255);
                 }
             }
+            GUI.DrawText("Timer: " + CountdownTimer, 30, 160, 30, 255, 255, 255);
+            GUI.DrawText("Score: " + HighscoreManager.GetCurrentScore(), 30, 190, 30, 255, 255, 255);
+
             GUI.Render();
         }
 
@@ -281,7 +312,7 @@ namespace OpenGL_Game.Game.Scenes
             // Need to remove assets (except Text) from Resource Manager
         }
 
-        public void ToMainMenuScene()
+        public void ToGameOverScene()
         {
             sceneManager.ChangeScene(SceneTypes.SCENE_GAME_OVER);
         }

@@ -1,6 +1,7 @@
 ﻿using OpenGL_Game.Engine.Components;
 using OpenGL_Game.Engine.Managers;
 using OpenGL_Game.Engine.Objects;
+using OpenGL_Game.Game.Scenes;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
@@ -13,19 +14,18 @@ namespace OpenGL_Game.Game.GameManagers
     class GameShootManager
     {
         private EntityManager entityManager;
-        private Camera camera;
         private string _playerName;
-        private ComponentPosition playerEntityPosition;
         float shootDelay = 0.2f;
-        public GameShootManager(EntityManager EntityManager) 
+        public int shootCooldown = 100;
+        private GameScene gameScene;
+        public GameShootManager(EntityManager EntityManager, GameScene gameScene, string playerName) 
         {
             entityManager = EntityManager;
-        }
-        public void Update(Camera pCamera, string playerName, ComponentPosition playerEntityPosition)
-        {
-            camera = pCamera;
+            this.gameScene = gameScene;
             _playerName = playerName;
-            this.playerEntityPosition = playerEntityPosition;
+        }
+        public void Update()
+        {
             shootDelay--;
         }
         public void Shoot()
@@ -49,8 +49,8 @@ namespace OpenGL_Game.Game.GameManagers
 
                 IComponent aiComponent = Engine.Systems.System.GetComponent(entity, ComponentTypes.COMPONENT_AI_TARGET);
                 ComponentAITarget aiTarget = (ComponentAITarget)aiComponent;
-                float distance = Vector3.Distance(position.Position, playerEntityPosition.Position);
-                Vector3 targetPoint = playerEntityPosition.Position + distance * camera.cameraDirection.Normalized();
+                float distance = Vector3.Distance(position.Position, gameScene.playerEntityPosition.Position);
+                Vector3 targetPoint = gameScene.playerEntityPosition.Position + distance * gameScene.camera.cameraDirection.Normalized();
                 ComponentAudio audio = Engine.Systems.System.GetComponent(entity, ComponentTypes.COMPONENT_AUDIO) as ComponentAudio;
                 
                 if (Vector3.Distance(targetPoint, position.Position) < 2 && (entity.Mask & ComponentTypes.COMPONENT_HEALTH) != 0)
@@ -60,6 +60,7 @@ namespace OpenGL_Game.Game.GameManagers
                     if(health.Health > 0)
                     {
                         health.Health--;
+                        HighscoreManager.AddToScore((int)gameScene.CountdownTimer * 5);
                     }
                     if (health.Health <= 0)
                     {
@@ -68,7 +69,7 @@ namespace OpenGL_Game.Game.GameManagers
                         audio.PlaySound("Game/Audio/shutdown.wav");
                     }
                 }
-                shootDelay = 20.5f;
+                shootDelay = shootCooldown;
             }
         }
     }

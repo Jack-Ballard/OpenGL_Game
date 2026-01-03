@@ -17,7 +17,7 @@ namespace OpenGL_Game.Engine.Managers
         private static StreamReader reader;
         private static StreamWriter writer;
         private static List<(string, int)> HighScores = new List<(string, int)>();
-        public static (string, int) HighScore;
+        public static (string, int) HighScore = ("blank",0);
 
         public static void Initalise()
         {
@@ -78,6 +78,14 @@ namespace OpenGL_Game.Engine.Managers
         public static void AddNewScore(int score)
         {
             HighScore.Item2 = score;
+        }
+        public static void AddToScore(int score)
+        {
+            HighScore.Item2 += score;
+        }
+        public static int GetCurrentScore()
+        {
+            return HighScore.Item2;
         }
         public static void AddNewName(string playerName)
         {

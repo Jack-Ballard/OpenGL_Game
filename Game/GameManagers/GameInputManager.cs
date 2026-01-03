@@ -48,14 +48,14 @@ namespace OpenGL_Game.Game.GameManagers
             if (keysPressed[(char)Keys.Up])
             {
                 //cameraPosition.Position += camera.cameraDirection * 0.1f;
-                CameraVector = scene.camera.cameraDirection * 5f;
+                CameraVector = scene.camera.cameraDirection * scene.camera.cameraSpeed;
                 //scene.playerEntityVelocity.Velocity = scene.camera.cameraDirection * 5f;
                 keyPressed = true;
             }
             if (keysPressed[(char)Keys.Down])
             {
                 //cameraPosition.Position += camera.cameraDirection * -0.1f;
-                CameraVector = scene.camera.cameraDirection * -5f;
+                CameraVector = scene.camera.cameraDirection * -scene.camera.cameraSpeed;
                 //scene.playerEntityVelocity.Velocity = scene.camera.cameraDirection * -5f;
                 keyPressed = true;
             }
@@ -74,7 +74,7 @@ namespace OpenGL_Game.Game.GameManagers
             }
             if (keysPressed[(char)Keys.M])
             {
-                scene.ToMainMenuScene();
+                scene.ToGameOverScene();
             }
             if (!keyPressed)
             {

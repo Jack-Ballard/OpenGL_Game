@@ -7,6 +7,7 @@ namespace OpenGL_Game
         public Matrix4 view, projection;
         public Vector3 cameraPosition, cameraDirection, cameraUp;
         private Vector3 targetPosition;
+        public float cameraSpeed = 5;
 
         public Camera()
         {

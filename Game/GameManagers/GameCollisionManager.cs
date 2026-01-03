@@ -15,9 +15,10 @@ namespace OpenGL_Game.Game.GameManagers
 {
     class GameCollisionManager : CollisionManager
     {
-
-        public GameCollisionManager() : base()
+        GameScene gameScene;
+        public GameCollisionManager(GameScene gameScene) : base()
         {
+            this.gameScene = gameScene;
         }
 
         public override void ProcessCollisions()
@@ -53,6 +54,8 @@ namespace OpenGL_Game.Game.GameManagers
                             ComponentPosition componentPosition = Engine.Systems.System.GetComponent(entityNotPlayer, ComponentTypes.COMPONENT_POSITION) as ComponentPosition;
                             componentPosition.Position = new Vector3(-100.0f, -100.0f, -100.0f); // Move the powerup out of the way
                             // Powerup 1
+                            gameScene.camera.cameraSpeed += 2.0f;
+                            HighscoreManager.AddToScore(10 * (int)gameScene.CountdownTimer);
                         }
                         else if(entityNotPlayer.Name == "Item2")
                         {
@@ -62,6 +65,8 @@ namespace OpenGL_Game.Game.GameManagers
                             ComponentPosition componentPosition = Engine.Systems.System.GetComponent(entityNotPlayer, ComponentTypes.COMPONENT_POSITION) as ComponentPosition;
                             componentPosition.Position = new Vector3(-100.0f, -100.0f, -100.0f); // Move the powerup out of the way
                             // Powerup 2
+                            gameScene.shootManager.shootCooldown = 60;
+                            HighscoreManager.AddToScore(10 * (int)gameScene.CountdownTimer);
                         }
                         else
                         {
