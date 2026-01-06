@@ -16,6 +16,7 @@ namespace OpenGL_Game.Game.GameManagers
     class GameCollisionManager : CollisionManager
     {
         GameScene gameScene;
+        public bool mazeCollisionEnabled = true;
         public GameCollisionManager(GameScene gameScene) : base()
         {
             this.gameScene = gameScene;
@@ -90,6 +91,10 @@ namespace OpenGL_Game.Game.GameManagers
                         Console.WriteLine("Processing Point-In-Box Collision between Entity " + collision.entity1 + " and Entity " + collision.entity2);
                         break;
                     case COLLISIONTYPE.AABB_AABB:
+                        if(!mazeCollisionEnabled)
+                        {
+                            break;
+                        }
                         // Handle AABB-AABB collision  
                         Console.WriteLine("Processing AABB-AABB Collision between Entity " + collision.entity1 + " and Entity " + collision.entity2);
 

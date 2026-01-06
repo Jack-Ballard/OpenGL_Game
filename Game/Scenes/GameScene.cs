@@ -21,7 +21,7 @@ namespace OpenGL_Game.Game.Scenes
         public static float dt = 0;
         EntityManager entityManager;
         SystemManager systemManager;
-        CollisionManager collisionManager;
+        public CollisionManager collisionManager;
         InputManager inputManager;
         public GameShootManager shootManager;
         GameEndManager endManager;

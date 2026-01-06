@@ -76,6 +76,14 @@ namespace OpenGL_Game.Game.GameManagers
             {
                 scene.ToGameOverScene();
             }
+            if (keysPressed[(char)Keys.C])
+            {
+                (scene.collisionManager as GameCollisionManager).mazeCollisionEnabled = false;
+            }
+            else if((scene.collisionManager as GameCollisionManager).mazeCollisionEnabled == false)
+            {
+                (scene.collisionManager as GameCollisionManager).mazeCollisionEnabled = true;
+            }
             if (!keyPressed)
             {
                 //playerEntityVelocity.Velocity = new Vector3(0, 0, 0);
